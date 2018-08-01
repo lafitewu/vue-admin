@@ -57,7 +57,9 @@ import echarts from 'echarts'
                     {name: "日期",prop: "dates",turn: true},
                     {name: "总收入",prop: "all_in"},
                     {name: "CPL收入",prop: "cpl_in"},
-                    {name: "CPA收入",prop: "cpa_in"}
+                    {name: "CPA收入",prop: "cpa_in"},
+                    {name: "小程序收入",prop: "cpa_in"},
+                    {name: "唤醒任务", prop: "cpa_in"}
                ],
                tableData: [],
                 Xdate: null,
@@ -137,8 +139,11 @@ import echarts from 'echarts'
                     series : [
                         {
                             type: 'line',
-                            smooth:true,
-                            itemStyle: {normal: {areaStyle: {type: 'default'},color: '#FFB704'}},
+                            itemStyle: {
+                                color: '#FFB704'
+                            },
+                            // smooth:true,
+                            // itemStyle: {normal: {areaStyle: {type: 'default'},color: '#FFB704'}},
                             data: that.val_date
                         }
                     ]

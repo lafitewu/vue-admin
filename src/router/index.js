@@ -60,6 +60,14 @@ export default new Router({
                 {
                     path: '/init_passworld',
                     component: resolve => require(['../components/page/init_passworld.vue'], resolve)    
+                },
+                {
+                    path: '/applist',
+                    component: resolve => require(['../components/page/appCenter/appList'], resolve)
+                },
+                {
+                    path: '/setAd',
+                    component: resolve => require(['../components/page/appCenter/setAd'], resolve)
                 }
             ]
         },

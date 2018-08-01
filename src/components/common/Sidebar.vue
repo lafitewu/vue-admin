@@ -29,25 +29,25 @@
                         index: 'readme',
                         title: '首页'
                     },
-                    // {
-                    //     icon: 'el-icon-menu',
-                    //     index: '2',
-                    //     title: '表格',
-                    //     subs: [
-                    //         {
-                    //             index: 'basetable',
-                    //             title: '基础表格'
-                    //         },
-                    //         {
-                    //             index: 'vuetable',
-                    //             title: 'Vue表格组件'
-                    //         },
-                    //         {
-                    //             index: 'Income',
-                    //             title: '收入报表'
-                    //         }
-                    //     ]
-                    // },
+                     {
+                         icon: 'el-icon-menu',
+                         index: '2',
+                         title: '应用中心',
+                         subs: [
+                             {
+                                 index: 'applist',
+                                 title: '应用列表'
+                             },
+                             {
+                                 index: 'setAd',
+                                 title: '广告设置'
+                             },
+//                             {
+//                                 index: 'Income',
+//                                 title: '收入报表'
+//                             }
+                         ]
+                     },
                     // {
                     //     icon: 'el-icon-date',
                     //     index: '3',
