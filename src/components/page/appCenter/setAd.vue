@@ -22,11 +22,52 @@
 			<el-input style="width:15%;margin-top: 0.5vw;" v-model="moneyVal" placeholder=""></el-input>
 		</div>
 
-		<!-- <div class="ads">
+		<div class="ads">
 			<h4>{{msg4}}</h4>
-			<div class="adsName">积分墙/加粉广告：</div>
-			<router-link class="adsBtn" to="home">查看列表</router-link>
-		</div> -->
+			<div class="adsTable">
+				<el-table
+				    ref="multipleTable"
+				    :data="tableData3"
+				    tooltip-effect="dark"
+				    style="width: 100%"
+				    @selection-change="handleSelectionChange">
+				    <el-table-column
+				      type="selection"
+				      width="55">
+				    </el-table-column>
+				    <el-table-column
+				      label="ID"
+				      width="120">
+				      <template slot-scope="scope">{{ scope.row.id }}</template>
+				    </el-table-column>
+				    <el-table-column
+				      prop="icon"
+				      label="图标"
+				      width="120">
+				    </el-table-column>
+				    <el-table-column
+				      prop="adname"
+				      label="广告名称"
+				      >
+				    </el-table-column>
+				    <el-table-column
+				      prop="pagename"
+				      label="包名"
+				      show-overflow-tooltip>
+				    </el-table-column>
+				    <el-table-column
+				      prop="startTime"
+				      label="投放开始时间"
+				      show-overflow-tooltip>
+				    </el-table-column>
+				    <el-table-column
+				      prop="endTime"
+				      label="投放结束时间"
+				      show-overflow-tooltip>
+				    </el-table-column>
+				</el-table>
+			</div>
+		</div>
 		<div class="adSave">确认保存</div>
 	</div>
 </template>
@@ -57,9 +98,75 @@
 		        }, {
 		          value: '选项5',
 		          label: '北京烤鸭'
-		        }]
+		        }],
+		        tableData3: [{
+		          id: '2016-05-03',
+		          icon: '王小虎',
+		          adname: '上海市普陀区金沙江路 1518 弄',
+		          pagename: 'yttsdsdsds.apk',
+		          startTime: '2016-05-03',
+		          endTime: '2016-05-03'
+		        }, {
+		          id: '2016-05-02',
+		          icon: '王小虎',
+		          adname: '上海市普陀区金沙江路 1518 弄',
+		          pagename: 'yttsdsdsds.apk',
+		          startTime: '2016-05-03',
+		          endTime: '2016-05-03'
+		        }, {
+		          id: '2016-05-04',
+		          icon: '王小虎',
+		          adname: '上海市普陀区金沙江路 1518 弄',
+		          pagename: 'yttsdsdsds.apk',
+		          startTime: '2016-05-03',
+		          endTime: '2016-05-03'
+		        }, {
+		          id: '2016-05-01',
+		          icon: '王小虎',
+		          adname: '上海市普陀区金沙江路 1518 弄',
+		          pagename: 'yttsdsdsds.apk',
+		          startTime: '2016-05-03',
+		          endTime: '2016-05-03'
+		        }, {
+		          id: '2016-05-08',
+		          icon: '王小虎',
+		          adname: '上海市普陀区金沙江路 1518 弄',
+		          pagename: 'yttsdsdsds.apk',
+		          startTime: '2016-05-03',
+		          endTime: '2016-05-03'
+		        }, {
+		          id: '2016-05-06',
+		          icon: '王小虎',
+		          adname: '上海市普陀区金沙江路 1518 弄',
+		          pagename: 'yttsdsdsds.apk',
+		          startTime: '2016-05-03',
+		          endTime: '2016-05-03'
+		        }, {
+		          id: '2016-05-07',
+		          icon: '王小虎',
+		          adname: '上海市普陀区金沙江路 1518 弄',
+		          pagename: 'yttsdsdsds.apk',
+		          startTime: '2016-05-03',
+		          endTime: '2016-05-03'
+		        }],
+		        multipleSelection: []
 			}
-		}
+		},
+		methods: {
+	      // toggleSelection(rows) {
+	      //   if (rows) {
+	      //     rows.forEach(row => {
+	      //       this.$refs.multipleTable.toggleRowSelection(row);
+	      //     });
+	      //   } else {
+	      //     this.$refs.multipleTable.clearSelection();
+	      //   }
+	      // },
+	      handleSelectionChange(val) {
+	        this.multipleSelection = val;
+	        console.log(val);
+	      }
+	    }
 	}
 </script>
 <style>
@@ -110,5 +217,8 @@
 			border-radius: 5px;
 			cursor: pointer;
 			/*margin: auto;*/
+		}
+		.adsTable {
+			margin-top: 1vw;
 		}
 </style>
