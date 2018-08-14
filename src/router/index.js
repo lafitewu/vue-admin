@@ -68,6 +68,10 @@ export default new Router({
                 {
                     path: '/setAd',
                     component: resolve => require(['../components/page/appCenter/setAd'], resolve)
+                },
+                {
+                    path: '/adList',
+                    component: resolve => require(['../components/page/appCenter/adList'], resolve)  
                 }
             ]
         },
