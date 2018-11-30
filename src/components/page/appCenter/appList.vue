@@ -2,6 +2,7 @@
 	<div class="appList">
 		<h3>{{msg}}</h3>
 		<el-table
+			v-loading="loading" element-loading-text="加载中...."
             :data="tableData"
             stripe
             :default-sort = "{prop: 'dates',order: 'descending'}"
@@ -18,6 +19,7 @@
 	export default {
 		data() {
 			return {
+				loading: true,
 				msg: '应用列表',
 				tableData: [],
 				appTable: [
@@ -34,6 +36,7 @@
 			var that = this;
 			that.$http.post(that.hostname+"/api/dev/getApps"+this.url_token()).then(function(res){
 				console.log(res.body.data);
+				that.loading = false;
 				that.tableData = res.body.data;
 			});
 		}

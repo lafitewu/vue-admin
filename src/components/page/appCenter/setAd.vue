@@ -23,10 +23,11 @@
 			<el-input style="width:15%;margin-top: 0.5vw;" v-model="moneyVal" placeholder=""></el-input>
 		</div>
 
-		<div class="ads">
+		<!-- <div class="ads">
 			<h4>{{msg4}}</h4>
 			<div class="adsTable">
 				<el-table
+					v-loading="loading" element-loading-text="加载中...."
 				    ref="multipleTable"
 				    :data="tableData3"
 				    tooltip-effect="dark"
@@ -60,19 +61,112 @@
 				      label="包名"
 				      show-overflow-tooltip>
 				    </el-table-column>
-				    <!-- <el-table-column
-				      prop="startTime"
-				      label="投放开始时间"
-				      show-overflow-tooltip>
-				    </el-table-column>
-				    <el-table-column
-				      prop="endTime"
-				      label="投放结束时间"
-				      show-overflow-tooltip>
-				    </el-table-column> -->
 				</el-table>
 			</div>
-		</div>
+		</div> -->
+		
+		<el-collapse style="margin-top: 30px" v-model="activeName" accordion>
+			<el-collapse-item :title="msg4" name="1">
+				<div class="adsTable">
+					<el-table
+						v-loading="loading" element-loading-text="加载中...."
+						ref="multipleTable"
+						:data="tableData3"
+						tooltip-effect="dark"
+						style="width: 100%"
+						@selection-change="handleSelectionChange">
+						<el-table-column
+						type="selection"
+						width="70">
+						</el-table-column>
+						<el-table-column
+						label="ID"
+						width="120">
+						<template slot-scope="scope">{{ scope.row.id }}</template>
+						</el-table-column>
+						<el-table-column
+						prop="img"
+						label="图标"
+						width="120"
+						>
+						<template scope="icon_scope">
+							<img style="width: 70%; margin-top: 10%;" :src="icon_scope.row.img" alt="图标"/>
+						</template>
+						</el-table-column>
+						<el-table-column
+						prop="name"
+						label="广告名称"
+						>
+						</el-table-column>
+						<el-table-column
+						prop="package_name"
+						label="包名"
+						show-overflow-tooltip>
+						</el-table-column>
+						<!-- <el-table-column
+						prop="startTime"
+						label="投放开始时间"
+						show-overflow-tooltip>
+						</el-table-column>
+						<el-table-column
+						prop="endTime"
+						label="投放结束时间"
+						show-overflow-tooltip>
+						</el-table-column> -->
+					</el-table>
+				</div>
+			</el-collapse-item>
+			<el-collapse-item :title="msg5" name="2">
+				<div class="adsTable">
+					<el-table
+						v-loading="loading" element-loading-text="加载中...."
+						ref="multipleTable"
+						:data="tableData3"
+						tooltip-effect="dark"
+						style="width: 100%"
+						@selection-change="handleSelectionChange">
+						<el-table-column
+						type="selection"
+						width="70">
+						</el-table-column>
+						<el-table-column
+						label="ID"
+						width="120">
+						<template slot-scope="scope">{{ scope.row.id }}</template>
+						</el-table-column>
+						<el-table-column
+						prop="img"
+						label="图标"
+						width="120"
+						>
+						<template scope="icon_scope">
+							<img style="width: 70%; margin-top: 10%;" :src="icon_scope.row.img" alt="图标"/>
+						</template>
+						</el-table-column>
+						<el-table-column
+						prop="name"
+						label="广告名称"
+						>
+						</el-table-column>
+						<el-table-column
+						prop="package_name"
+						label="包名"
+						show-overflow-tooltip>
+						</el-table-column>
+						<!-- <el-table-column
+						prop="startTime"
+						label="投放开始时间"
+						show-overflow-tooltip>
+						</el-table-column>
+						<el-table-column
+						prop="endTime"
+						label="投放结束时间"
+						show-overflow-tooltip>
+						</el-table-column> -->
+					</el-table>
+				</div>
+			</el-collapse-item>
+			</el-collapse>
 		<div class="adSave" @click="saveFn">确认保存</div>
 	</div>
 </template>
@@ -80,6 +174,7 @@
 	export default {
 		data() {
 			return {
+				loading: true,
 				Id: '',
 				filterCpl: [],
 				msg: '广告设置',
@@ -87,6 +182,7 @@
 				msg2: '虚拟货币名称：',
 				msg3: '虚拟货币汇率：',
 				msg4: 'CPL广告过滤',
+				msg5: 'CPA广告过滤',
 				value: '',
 				value2: '金币',
 				moneyVal: '100',
@@ -107,6 +203,7 @@
 			Init() {
 				var that = this;
 				that.$http.post(that.hostname+"/api/dev/getAppsConfigs"+this.url_token()).then(function(res){
+					that.loading = false;
 					that.options = res.data.data;
 					that.Id = that.options[0].id;
 					that.value = that.options[0].name;
@@ -118,6 +215,7 @@
 			// 保存接口
 			saveFn() {
 				var that = this;
+				that.loading = true;
 				var datas = {
 					id: that.Id,
 					exdw: that.value2,

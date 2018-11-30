@@ -3,40 +3,43 @@
         <el-row>
             <el-col :span="6" v-for="(item,index) in arr" :key="index"><div class="grid-content bg-purple" :class="item.class"><span>{{item.name}}</span><p>{{item.val}}</p></div></el-col>
         </el-row>
-        <div class="chart_nav">
-            <span class="chart_title">{{echart_title}}</span>
-            <div class="all_btn">
-                <div class="chart_btn" @click="tap(index)" :class="{echat_active: active ==index}" v-for="(item,index) in echart_btn" :key="index">{{item.name}}</div>
+        <div v-loading="loading" element-loading-text="加载中...">
+            <div class="chart_nav">
+                <span class="chart_title">{{echart_title}}</span>
+                <div class="all_btn">
+                    <div class="chart_btn" @click="tap(index)" :class="{echat_active: active ==index}" v-for="(item,index) in echart_btn" :key="index">{{item.name}}</div>
 
-                <!-- 日期选择 -->
-                <el-date-picker
-                    @change="SelectFn"
-                    v-model="valueDate"
-                    type="daterange"
-                    range-separator="至"
-                    placeholder="选择日期"
-                >
-                </el-date-picker>
+                    <!-- 日期选择 -->
+                    <el-date-picker
+                        @change="SelectFn"
+                        v-model="valueDate"
+                        type="daterange"
+                        range-separator="至"
+                        placeholder="选择日期"
+                    >
+                    </el-date-picker>
+                </div>
             </div>
-        </div>
-        <el-row :gutter="20">
-           <el-col :span="24">
-                <div id="mychart"></div>
-            </el-col> 
-        </el-row>
-        <div class="tab_title">详细信息列表</div>
-        <div class="tablist">
-            <el-table
-            :data="tableData"
-            stripe
-            :default-sort = "{prop: 'dates',order: 'descending'}"
-            style="width: 94%;margin: 0 auto;font-size: 1rem">
-            <el-table-column v-for="item in table"
-              :prop="item.prop"
-              :label="item.name"
-              :sortable="item.turn" >
-            </el-table-column>
-          </el-table>
+            <el-row :gutter="20">
+            <el-col :span="24">
+                    <div id="mychart"></div>
+                </el-col> 
+            </el-row>
+            <div class="tab_title">详细信息列表</div>
+            <div class="tablist">
+                <el-table
+                :data="tableData"
+                stripe
+                :default-sort = "{prop: 'dates',order: 'descending'}"
+                style="width: 94%;margin: 0 auto;font-size: 1rem">
+                <el-table-column v-for="item in table"
+                :key="item.name"
+                :prop="item.prop"
+                :label="item.name"
+                :sortable="item.turn" >
+                </el-table-column>
+            </el-table>
+            </div>
         </div>
     </div>
 </template>
@@ -46,6 +49,7 @@ import echarts from 'echarts'
     export default {
         data(){
             return {
+                loading: true,
                 echart_title: '总收入趋势',
                 show_day: 7,
                 startDate: '',
@@ -108,6 +112,7 @@ import echarts from 'echarts'
                 that.$http.post(that.hostname+"/api/dev/incomeRange"+this.url_token(),{days: that.show_day, start: that.startDate, end: that.endDate}).then(function(response){
                     console.log(response);
                     // x轴数据
+                    that.loading = false;
                     that.Xdate = response.data.data.date
                     // 图表val
                     that.val_date = response.data.data.total
@@ -167,15 +172,13 @@ import echarts from 'echarts'
                 });
                 // echarts 随着窗口大小改变而改变
                 // window.onresize(myChart.resize()) 
-                    
-                
-                
             }
             that.fn();
         },
         methods: {
             // tab动态显示
             tap(a) {
+                this.loading = true;
                 this.active = a
                 this.show_day = this.echart_btn[a].value
                 // 归零处理
@@ -191,8 +194,10 @@ import echarts from 'echarts'
                 }
             },
             SelectFn(val) {
+                this.loading = true;
                 this.startDate = val.split('至')[0];
                 this.endDate = val.split('至')[1];
+                this.tableData = [];
                 this.fn();
                 console.log(this.endDate);
             }

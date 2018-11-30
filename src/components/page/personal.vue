@@ -2,7 +2,7 @@
 	<div class="personal">
 		<div class="person_title">{{title}}</div>
 		<ul class="person_ul">
-			<li v-for="item in msg">
+			<li v-for="item in msg" :key="item.name">
 				<span>{{item.name}}：</span>
 				<font>{{item.val}}</font></li>
 		</ul>
