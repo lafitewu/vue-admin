@@ -7,6 +7,16 @@
             <span class="chart_title">{{echart_title}}</span>
             <div class="all_btn">
                 <div class="chart_btn" @click="tap(index)" :class="{echat_active: active ==index}" v-for="(item,index) in echart_btn" :key="index">{{item.name}}</div>
+
+                <!-- 日期选择 -->
+                <el-date-picker
+                    @change="SelectFn"
+                    v-model="valueDate"
+                    type="daterange"
+                    range-separator="至"
+                    placeholder="选择日期"
+                >
+                </el-date-picker>
             </div>
         </div>
         <el-row :gutter="20">
@@ -38,13 +48,16 @@ import echarts from 'echarts'
             return {
                 echart_title: '总收入趋势',
                 show_day: 7,
+                startDate: '',
+                endDate: '',
                 fn: "",
                 active: 0,
+                valueDate: '',
                 echart_btn: [
                     {name: "7天内",value: 7},
                     {name: "30天内",value: 30},
-                    {name: "60天内",value: 60},
-                    {name: "更多详情",value: "more"}
+                    {name: "60天内",value: 60}
+                    // {name: "更多详情",value: "more"}
                 ],
                 countdata: [],
                 arr: [
@@ -58,12 +71,14 @@ import echarts from 'echarts'
                     {name: "总收入",prop: "all_in"},
                     {name: "CPL收入",prop: "cpl_in"},
                     {name: "CPA收入",prop: "cpa_in"},
-                    {name: "小程序收入",prop: "cpa_in"},
-                    {name: "唤醒任务", prop: "cpa_in"}
+                    {name: "小程序收入",prop: "wx"},
+                    {name: "唤醒任务", prop: "wakeup"}
                ],
                tableData: [],
                 Xdate: null,
-                val_date: null 
+                val_date: null
+                // hostname: "http://ad.api.com",
+                // hostname: "http://ad.midongtech.com"
             }
         },
         mounted() {
@@ -74,7 +89,7 @@ import echarts from 'echarts'
             // 封装调用api
             that.fn = function () {
                 // 金额总计api
-                that.$http.jsonp("http://ad.midongtech.com/api/dev/summary"+this.url_token()).then(function(response){
+                that.$http.jsonp(that.hostname+"/api/dev/summary"+this.url_token()).then(function(response){
                     // 防止多处登录
                     if(response.body.code == 0) {
                         this.$router.replace('/login');
@@ -90,14 +105,15 @@ import echarts from 'echarts'
                     }
                 });
                 // 日期数据api
-                that.$http.post("http://ad.midongtech.com/api/dev/incomeRange"+this.url_token(),{days: that.show_day}).then(function(response){
+                that.$http.post(that.hostname+"/api/dev/incomeRange"+this.url_token(),{days: that.show_day, start: that.startDate, end: that.endDate}).then(function(response){
+                    console.log(response);
                     // x轴数据
                     that.Xdate = response.data.data.date
                     // 图表val
                     that.val_date = response.data.data.total
                     var len = response.data.data.date.length,obj;
                     for(var i = 0; i < len; i++) {
-                       obj = {dates: response.data.data.date[i],all_in: response.data.data.total[i],cpl_in: response.data.data.cpl[i], cpa_in: response.data.data.cpa[i]}
+                       obj = {dates: response.data.data.date[i],all_in: response.data.data.total[i],cpl_in: response.data.data.cpl[i], cpa_in: response.data.data.cpa[i], wx: response.data.data.mini[i], wakeup: response.data.data.wakeup[i]}
                        that.tableData.push(obj); 
                     }
                     // console.log(that.tableData);
@@ -173,6 +189,12 @@ import echarts from 'echarts'
                 }else {
                   this.fn()  
                 }
+            },
+            SelectFn(val) {
+                this.startDate = val.split('至')[0];
+                this.endDate = val.split('至')[1];
+                this.fn();
+                console.log(this.endDate);
             }
         }
     }

@@ -17,6 +17,9 @@ Vue.prototype.$axios = axios;
 Vue.prototype.url_token = function() {
 	return "?token="+this.$cookies.get('token');
 }
+// 定义全局hostname
+Vue.prototype.hostname = "http://ad.midongtech.com";  //http://ad.api.com
+
 new Vue({
     router,
     render: h => h(App)

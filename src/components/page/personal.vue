@@ -30,7 +30,7 @@
 		},
 		mounted() {
 			var that = this;
-			that.$http.jsonp("http://ad.midongtech.com/api/dev/profile"+this.url_token()).then(function(response){
+			that.$http.jsonp(that.hostname+"/api/dev/profile"+this.url_token()).then(function(response){
                 // console.log(response.data);
                 // for(var i = 0;i < that.$data.massage.length;i++) {
                 // 	console.log(response.data.data.length);

@@ -42,10 +42,10 @@
                                  index: 'setAd',
                                  title: '广告设置'
                              },
-                             {
-                                 index: 'adList',
-                                 title: '过滤广告'
-                             },
+                             // {
+                             //     index: 'adList',
+                             //     title: '过滤广告'
+                             // },
 //                             {
 //                                 index: 'Income',
 //                                 title: '收入报表'

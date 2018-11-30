@@ -33,13 +33,15 @@
                     password: [
                         { required: true, message: '请输入密码', trigger: 'blur' }
                     ]
-                }
+                },
+                // hostname: "http://ad.api.com",
+                // hostname: "http://ad.midongtech.com"
             }
         },
         methods: {
             submitForm() {
                 var that = this;
-                that.$http.post("http://ad.midongtech.com/api/dev/login",{username: that.ruleForm.username,password: that.ruleForm.password}).then(function(response){
+                that.$http.post(that.hostname+"/api/dev/login",{username: that.ruleForm.username,password: that.ruleForm.password}).then(function(response){
                     // console.log(response.data.data.token);
                     if(response.data.code == 1) {
                         that.$cookies.set('token',response.data.data.token,0) 

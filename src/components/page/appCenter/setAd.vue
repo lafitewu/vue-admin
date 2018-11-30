@@ -2,12 +2,13 @@
 	<div class="setAd">
 		<h3>{{msg}}</h3>
 		<div class="selects">
-			<el-select v-model="value" placeholder="请选择应用">
+			<el-select v-model="value" placeholder="请选择应用" @change="selectFn">
 			    <el-option
 			      v-for="item in options"
-			      :key="item.value"
-			      :label="item.label"
-			      :value="item.value">
+			      :key="item.id"
+			      :label="item.name"
+			      :value="item.id"
+			      >
 			    </el-option>
 			</el-select>
 		</div>
@@ -33,7 +34,7 @@
 				    @selection-change="handleSelectionChange">
 				    <el-table-column
 				      type="selection"
-				      width="55">
+				      width="70">
 				    </el-table-column>
 				    <el-table-column
 				      label="ID"
@@ -41,21 +42,25 @@
 				      <template slot-scope="scope">{{ scope.row.id }}</template>
 				    </el-table-column>
 				    <el-table-column
-				      prop="icon"
+				      prop="img"
 				      label="图标"
-				      width="120">
+				      width="120"
+				      >
+				      <template scope="icon_scope">
+				      	<img style="width: 70%; margin-top: 10%;" :src="icon_scope.row.img" alt="图标"/>
+				      </template>
 				    </el-table-column>
 				    <el-table-column
-				      prop="adname"
+				      prop="name"
 				      label="广告名称"
 				      >
 				    </el-table-column>
 				    <el-table-column
-				      prop="pagename"
+				      prop="package_name"
 				      label="包名"
 				      show-overflow-tooltip>
 				    </el-table-column>
-				    <el-table-column
+				    <!-- <el-table-column
 				      prop="startTime"
 				      label="投放开始时间"
 				      show-overflow-tooltip>
@@ -64,17 +69,19 @@
 				      prop="endTime"
 				      label="投放结束时间"
 				      show-overflow-tooltip>
-				    </el-table-column>
+				    </el-table-column> -->
 				</el-table>
 			</div>
 		</div>
-		<div class="adSave">确认保存</div>
+		<div class="adSave" @click="saveFn">确认保存</div>
 	</div>
 </template>
 <script>
 	export default {
 		data() {
 			return {
+				Id: '',
+				filterCpl: [],
 				msg: '广告设置',
 				msg1: '虚拟货币设置',
 				msg2: '虚拟货币名称：',
@@ -83,88 +90,81 @@
 				value: '',
 				value2: '金币',
 				moneyVal: '100',
-				options: [{
-		          value: '选项1',
-		          label: '黄金糕'
-		        }, {
-		          value: '选项2',
-		          label: '双皮奶'
-		        }, {
-		          value: '选项3',
-		          label: '蚵仔煎'
-		        }, {
-		          value: '选项4',
-		          label: '龙须面'
-		        }, {
-		          value: '选项5',
-		          label: '北京烤鸭'
-		        }],
-		        tableData3: [{
-		          id: '2016-05-03',
-		          icon: '王小虎',
-		          adname: '上海市普陀区金沙江路 1518 弄',
-		          pagename: 'yttsdsdsds.apk',
-		          startTime: '2016-05-03',
-		          endTime: '2016-05-03'
-		        }, {
-		          id: '2016-05-02',
-		          icon: '王小虎',
-		          adname: '上海市普陀区金沙江路 1518 弄',
-		          pagename: 'yttsdsdsds.apk',
-		          startTime: '2016-05-03',
-		          endTime: '2016-05-03'
-		        }, {
-		          id: '2016-05-04',
-		          icon: '王小虎',
-		          adname: '上海市普陀区金沙江路 1518 弄',
-		          pagename: 'yttsdsdsds.apk',
-		          startTime: '2016-05-03',
-		          endTime: '2016-05-03'
-		        }, {
-		          id: '2016-05-01',
-		          icon: '王小虎',
-		          adname: '上海市普陀区金沙江路 1518 弄',
-		          pagename: 'yttsdsdsds.apk',
-		          startTime: '2016-05-03',
-		          endTime: '2016-05-03'
-		        }, {
-		          id: '2016-05-08',
-		          icon: '王小虎',
-		          adname: '上海市普陀区金沙江路 1518 弄',
-		          pagename: 'yttsdsdsds.apk',
-		          startTime: '2016-05-03',
-		          endTime: '2016-05-03'
-		        }, {
-		          id: '2016-05-06',
-		          icon: '王小虎',
-		          adname: '上海市普陀区金沙江路 1518 弄',
-		          pagename: 'yttsdsdsds.apk',
-		          startTime: '2016-05-03',
-		          endTime: '2016-05-03'
-		        }, {
-		          id: '2016-05-07',
-		          icon: '王小虎',
-		          adname: '上海市普陀区金沙江路 1518 弄',
-		          pagename: 'yttsdsdsds.apk',
-		          startTime: '2016-05-03',
-		          endTime: '2016-05-03'
-		        }],
+				options: [],
+		        tableData3: [],
 		        multipleSelection: []
 			}
 		},
+		mounted() {
+			this.Init();
+		},
+		// 组件更新之后执行(解决checked()中len取不到值)
+		updated() {
+			this.checked();
+		},
 		methods: {
-	      // toggleSelection(rows) {
-	      //   if (rows) {
-	      //     rows.forEach(row => {
-	      //       this.$refs.multipleTable.toggleRowSelection(row);
-	      //     });
-	      //   } else {
-	      //     this.$refs.multipleTable.clearSelection();
-	      //   }
-	      // },
-	      handleSelectionChange(val) {
-	        this.multipleSelection = val;
-	        console.log(val);
+			// 初始化
+			Init() {
+				var that = this;
+				that.$http.post(that.hostname+"/api/dev/getAppsConfigs"+this.url_token()).then(function(res){
+					that.options = res.data.data;
+					that.Id = that.options[0].id;
+					that.value = that.options[0].name;
+					that.value2 = that.options[0].exdw;
+					that.moneyVal = that.options[0].exchange;
+					that.tableData3 = that.options[0].cpls;
+				});
+			},
+			// 保存接口
+			saveFn() {
+				var that = this;
+				var datas = {
+					id: that.Id,
+					exdw: that.value2,
+					exchange: that.moneyVal,
+					filterCpl: that.filterCpl
+				};
+				that.$http.post(that.hostname+"/api/dev/saveAppConfig"+this.url_token(),datas).then(function(res){
+					console.log(res.body);
+					if(res.body.code == 1) {
+						this.$notify.success({
+	                      title: '成功',
+	                      message: '保存成功！',
+	                    });
+	                    this.Init();
+					}else {
+						this.$notify.error({
+	                      title: '失败',
+	                      message: res.body.msg,
+	                    });
+					}
+				});
+			},
+			checked(){
+				var len = this.tableData3.length;
+				// console.log(this.tableData3);
+				for(var i = 0; i < len; i++) {
+					if(this.tableData3[i].ignore == 1) {
+						this.$refs.multipleTable.toggleRowSelection(this.tableData3[i],true);
+					}
+				}
+		    },
+		    // cpl过滤
+		    handleSelectionChange(val) {
+		    	this.filterCpl = val;
+		    },
+		    // 下拉菜单动态赋值
+	    	selectFn(val) {
+		      	var keys;
+		      	for(var i = 0,L = this.options.length; i < L; i++) {
+		      		if(val == this.options[i].id) {
+		      			keys = i;
+		      		}
+		      	}
+		      	this.Id = this.options[keys].id;
+		      	this.value2 = this.options[keys].exdw;
+		      	this.moneyVal = this.options[keys].exchange;
+		      	this.tableData3 = this.options[keys].cpls;
 	      }
 	    }
 	}

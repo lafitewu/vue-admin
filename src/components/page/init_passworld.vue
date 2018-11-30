@@ -29,7 +29,7 @@
 					"password1": that.$data.pass_arr[1].val,
 					"password2": that.$data.pass_arr[2].val
 				}
-				that.$http.post("http://ad.midongtech.com/api/dev/modifyPassword"+this.url_token(),psd).then(function(response){
+				that.$http.post(that.hostname+"/api/dev/modifyPassword"+this.url_token(),psd).then(function(response){
 					this.$message.error(response.data.msg);
 	            });
 			}
