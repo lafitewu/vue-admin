@@ -55,7 +55,11 @@ export default new Router({
                 },
                 {
                     path: '/personal',
-                    component: resolve => require(['../components/page/personal.vue'], resolve)    // 个人中心
+                    component: resolve => require(['../components/page/personal/personal.vue'], resolve)    // 基本信息
+                },
+                {
+                    path: '/personal_Edit',
+                    component: resolve => require(['../components/page/personal/personalEdit.vue'], resolve)    // 基本信息编辑页面
                 },
                 {
                     path: '/init_passworld',
