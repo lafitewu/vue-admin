@@ -6,14 +6,36 @@
 			<span>{{item.unit}}</span>
 			<span>{{item.holder}}</span>
 			<input @change="InputFn" class="money_input" v-model="valMoney" type="number" v-if="item.inputs">
-			<span class="InputNotice" v-show="item.notice">ps: 提现金额不能超过可提现余额</span>
+			<span class="input_info" v-if="item.info">*提款金额需为整元，并且不少于500元</span>
+			<span class="InputNotice" v-if="item.notice">ps: {{noticeWorld}}</span>
 		</div>
 		<div class="Last_info">
-			<el-checkbox v-model="checked"><span>我方确认：结算金额以幂动确认的金额为准。</span></el-checkbox>
+			<el-checkbox v-model="checked" @change="checkBoxFn"><span>我方确认：结算金额以幂动确认的金额为准。</span></el-checkbox>
+			<span class="InputNotice" v-if="checkBoxTurn">ps: 请进行确认</span>
 		</div>
 		<div class="init_btn">
 			
-            <el-button class="init_click" type="primary" @click="edits">马上提款</el-button>
+            <el-button class="init_click" type="primary" @click="cashFn">马上提款</el-button>
+
+			<el-card class="box-card">
+				<div slot="header" class="clearfix">
+					<span>注意事项：</span>
+				</div>
+				<div>
+					<h4>1.打款周期说明：</h4>
+					<span class="listNode">1.1 统一实行月结方式。开发者可以在任意时刻申请提款，幂动将于每月10日审核开发者上月所有的提款申请并安排付款。如遇节假日则顺延处理。</span>
+					<h4>2.可提款余额说明：</h4>
+					<span class="listNode">2.1 申请提款只能提取“可提款余额”所示的金额;</span>
+					<span class="listNode">2.2 收入金额>=500元时可进行结算，不足500元时，将累计至账户余额;</span>
+					<h4>3.发票注意事项：</h4>
+					<span class="listNode"> 3.1 开发者在平台申请提款，需要依法开具抬头为“广州幂动科技有限公司”的增值税专用发票;</span>
+					<span class="listNode"> 3.2 提供的增值税专用发票发票金额必须与提款金额一致;</span>
+					<span class="listNode"> 3.3 增值税专用发票内容可为：信息服务费、技术服务费或广告费;</span>
+					<h4>4.如遇以下情况提款申请将延期处理：</h4>
+					<span class="listNode"> 4.1 发票出现错误，会通知开发者说明情况并将发票回寄，开发者需重新开票;</span>
+					<span class="listNode"> 4.2 在提现申请处理期间，幂动没收到等同金额的发票。</span>
+				</div>
+			</el-card>
         </div>
 	</div>
 </template>
@@ -30,26 +52,20 @@
 					{label: "账户余额",holder: "",unit: '￥'},
 					{label: "可提款余额",holder: "",unit: '￥'},
 					{label: "发票方式",holder: "提供发票"},
-					{label: "提款金额",holder: "",unit: '￥',inputs: true, notice: false},
+					{label: "提款金额",holder: "",unit: '￥',inputs: true, notice: false,info: true},
 					{label: "打款金额",holder: "",unit: '￥'},
 				],
 				valMoney: '',
-				noticeInfo: false
+				noticeInfo: false,
+				checked: false,
+				noticeWorld: "提现金额不能超过可提现余额",
+				checkBoxTurn: false
 			}
 		},
 		mounted() {
 			this.Init();
 		},
 		methods: {
-			edits() {
-				var that = this;
-				var datas = {
-					
-				}
-				that.$http.post(that.hostname+"/api/dev/"+this.url_token(),datas).then(function(response){
-					// this.$message.error(response.data.msg);
-	            });
-			},
 			Init() {
                var that = this;
                 that.$http.jsonp(that.hostname+"/api/dev/userinfo"+this.url_token()).then(function(response){
@@ -73,7 +89,6 @@
                 });
 		   },
 		   InputFn() {
-
 			   if(this.valMoney > this.ruleForm.withbalance) {
 				   this.pass_arr[7].notice = true;
 				   this.pass_arr[8].holder = "";
@@ -83,6 +98,43 @@
 				   this.pass_arr[8].holder = this.valMoney;
 			   }
 			   
+		   },
+		   cashFn() {
+			   let that = this;
+			   if((that.pass_arr[8].holder >= 500) && (that.checked)) {
+					var datas = {
+						amount: that.pass_arr[8].holder
+					}
+					that.$http.post(that.hostname+"/api/dev/withdraw"+this.url_token(),datas).then(function(response){
+						if(response.data.code == 0) {
+							that.$notify.error({
+								title: '错误',
+								message: response.data.msg
+							});
+						}else {
+							that.$notify({
+								title: '成功',
+								message: '提交成功',
+								type: 'success'
+							});
+							that.$router.push('/account');
+						}
+						
+					});
+			   }else {
+				   if(!that.checked) {
+					   that.checkBoxTurn = true;
+				   }else {
+					   that.$message.error('请输入正确的提现金额');
+				   }
+			   }
+		   },
+		   checkBoxFn() {
+			   if(this.checked) {
+				   this.checkBoxTurn = false;
+			   }else {
+				   this.checkBoxTurn = true;
+			   }
 		   }
 		}
 	}
@@ -139,9 +191,32 @@
 		.Last_info span {
 			color: #20A0FF;
 		}
+		.Last_info .InputNotice {
+			margin-left: 15px;
+			color: #C03616;
+			font-size: 14px;
+		}
 	
 	.InputNotice {
 		margin-left: 15px;
 		color: #C03616;
 	}
+
+	.input_info {
+		color: gray;
+		margin-left: 15px;
+	}
+
+
+	.box-card {
+		position: fixed;
+		top: 10%;
+		right: 20px;
+		width: 350px;
+		line-height: 28px;
+	}
+		.listNode {
+			display: block;
+			margin-left: 10px;
+		}
 </style>

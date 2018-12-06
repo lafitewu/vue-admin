@@ -23,6 +23,7 @@
     export default {
         data() {
             return {
+                nowPath: '',
                 items: [
                     {
                         icon: 'iconfont el-icons-home',
@@ -80,7 +81,12 @@
         },
         computed:{
             onRoutes(){
-                return this.$route.path.replace('/','');
+                this.nowPath = this.$route.path.replace('/','');
+
+                if(this.nowPath == "personal_Edit") {
+                    this.nowPath = "personal";
+                }
+                return this.nowPath
             }
         }
     }

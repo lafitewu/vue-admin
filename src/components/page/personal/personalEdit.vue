@@ -108,14 +108,14 @@
 					  :show-file-list="false"
 					  :on-success="open_licenseSuccess"
 					  :before-upload="beforeAvatarUpload">
-					  <div class="coverDialog" v-if="!btn_turn">
+					  <!-- <div class="coverDialog" v-if="!btn_turn">
 						  <div class="layer" @click="handleFileEnlarge(ruleForm.businessLicenseUrl)">
 								<i class="el-icon-view"></i>
 							</div>
 							<div class="del">
 								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
 							</div>
-					  </div>
+					  </div> -->
 					  <img v-if="ruleForm.open_license" :src="ruleForm.open_license" class="avatar">
 					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
 					</el-upload>
@@ -152,7 +152,8 @@
 				<el-input style="width: 400px" type="text" v-model="ruleForm.bankaccount" :disabled="Disabled"></el-input>
 			</el-form-item>
 		</el-form>
-
+		
+		<el-button class="editBtn" @click="goBack" type="primary" plain v-if="btnShow">返回</el-button>
 		<el-button class="editBtn" @click="editToFn" type="primary" plain v-if="btnShow">修改信息</el-button>
 		<el-button class="editBtn" @click="dialogVisible = true" type="primary" v-if="!btnShow">保存信息</el-button>
 
@@ -226,8 +227,13 @@
 		},
 		methods: {
 			editToFn() {
-				this.Disabled = null;
-				this.btnShow = false;
+				if(this.ruleForm.status == "审核中") {
+					this.$message.error('正在审核中，不可编辑');
+				}else {
+					this.Disabled = null;
+					this.btnShow = false;
+				}
+				
 			},
 			nameFn(val) {
 				if(val == "0") {
@@ -279,6 +285,18 @@
 			saveFn() {
 				let that = this;
 				that.dialogVisible = false;
+				if(that.ruleForm.utype == "0") {
+					// 个人
+					that.ruleForm.compayname = "";
+					that.ruleForm.open_license = "";
+					that.ruleForm.business_license = "";
+				}else {
+					// 公司
+					that.ruleForm.name = "";
+					that.ruleForm.cardno = "";
+					that.ruleForm.cardupimage = "";
+					that.ruleForm.carddownimage = "";
+				}
 				var Datas = {
 					email: that.ruleForm.email,
 					utype: that.ruleForm.utype,
@@ -310,13 +328,15 @@
 					that.btnShow = true;
 
 				}, (response) => {
-					// error callback
 				});
 			},
 			cancleFn() {
 				this.dialogVisible = false;
 				this.Disabled = "";
 				this.btnShow = true;
+			},
+			goBack() {
+				this.$router.push("/personal");
 			}
 		}
 	}
@@ -333,7 +353,7 @@
 		.editBtn {
 			margin-top: 30px;
 			width: 120px;
-			margin-left: 40%;
+			margin-left: 35%;
 		}
 		.mian_ruleForm {
 			margin-top: 20px;
