@@ -1,7 +1,7 @@
 <template>
 	<div class="passworld">
 		<div class="pass_title">{{title}}</div>
-		<div class="init_list" v-for="item in pass_arr">
+		<div class="init_list" v-for="item in pass_arr" :key="item.val">
 			<font>{{item.label}}：</font><span>*</span><el-input class="init_input" v-model="item.val" :placeholder="item.holder"></el-input>
 		</div>
 		<div class="init_btn">
@@ -36,7 +36,7 @@
 		}
 	}
 </script>
-<style>
+<style scoped>
 	.pass_title {
 		font-size: 1.4rem;
 		font-weight: bold;

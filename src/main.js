@@ -8,6 +8,7 @@ import 'element-ui/lib/theme-default/index.css';    // 默认主题
 // import '../static/css/theme-green/index.css';       // 浅绿色主题
 import "babel-polyfill";
 import VueCookies from 'vue-cookies';
+import './assets/icon/index.css';
 
 Vue.use(VueCookies)
 

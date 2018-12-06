@@ -1,78 +1,112 @@
 <template>
-	<div class="unit_one unit_lafite">
-		<div class="unit_one_top">
-			<div class="unit_o_left_btn" @click="goBack"><i class="el-icon-arrow-left"></i>{{msg}}</div>
-			<div class="unit_o_right">
-				<div class="enter_btn" v-if="!btn_turn">
-					<el-button type="primary" @click="EditFn" plain><i class="el-icon-edit"></i><span>编辑</span></el-button>
-					<!-- <el-button type="danger" plain><i class="el-icon-delete"></i><span>删除</span></el-button>
-					<el-button type="primary" plain><i class="el-icon-document"></i><span>复制</span></el-button> -->
-				</div>
-				<div class="out_btn" v-if="btn_turn">
-					<el-button type="primary" @click="saveFn"><span>保存</span></el-button>
-					<el-button type="danger" @click="cancelFn" plain><span>取消</span></el-button>
-				</div>
-				<el-switch 
-					@change="changeFn"
-					:disabled="isDisable"
-			        on-text ="上线"
-                    off-text = "暂停"
-                    on-color="#00D1B2"
-                    off-color="#dadde5" 
-                    v-model="statusRadio"
-                    >
-				</el-switch>
-				<el-tag type="success" style="float: right; margin-right: 1vw; margin-top:5px">{{statusInfo}}</el-tag>
-			</div>
-		</div>
-		<div class="unit_o_content">
-			<el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-				<el-form-item label="名称" prop="name">
-					<el-input v-model="ruleForm.name" :disabled="Disabled"></el-input>
-					<span class="unit_infro">为您的广告主取一个唯一的名字，建议客户名称与营业执照一致</span>
-				</el-form-item>
-				
-				<el-form-item label="邮箱" prop="email">
-					<el-input v-model="ruleForm.email" :disabled="Disabled"></el-input>
-					<span class="unit_infro">填一个广告主的邮箱账号，可以为广告主申请用这个邮箱来登录查看信息</span>
-				</el-form-item>
+	<div class="personal" v-loading="loading">
+		<div class="person_title">{{title}}</div>
+		<el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="mian_ruleForm">
+			<el-form-item label="认证状态">
+				<span style="color: #20A0FF;font-weight: bold;">{{ruleForm.status}}</span>
+			</el-form-item>
+			<el-form-item label="身份类型">
+				<el-radio-group :disabled="Disabled" @change="nameFn" v-model="ruleForm.utype">
+					<el-radio label="1">公司</el-radio>
+					<el-radio label="0">个人</el-radio>
+				</el-radio-group>
+			</el-form-item>
+			<el-form-item label="公司名称" v-if="!nameTurn">
+				<el-input style="width: 400px" type="text" v-model="ruleForm.compayname" :disabled="Disabled"></el-input>
+			</el-form-item>
+			<el-form-item label="个人名称" :disabled="Disabled" v-if="nameTurn">
+				<el-input style="width: 400px" type="text" v-model="ruleForm.realname" :disabled="Disabled"></el-input>
+			</el-form-item>
 
-				<el-form-item label="类型" prop="typeName">
-					<el-select v-model="ruleForm.typeName" style="width: 100%;" @change="selectFn($event,item)" :disabled="Disabled">
-				    	<el-option v-for="items in selectType" :label="items.keyStr" :value="items.valueStr" :key="items.index"></el-option>
-				    </el-select>
-					<span class="unit_infro">为广告主选择一个正确的类型，可以更好的获取到精准用户</span>
-				</el-form-item>
+			<el-form-item label="身份证号码" v-if="nameTurn">
+				<el-input style="width: 400px" type="text" v-model="ruleForm.cardno" :disabled="Disabled"></el-input>
+			</el-form-item>
 
-				<el-form-item label="级别" prop="level">
-					<el-radio-group v-model="ruleForm.level">
-					    <el-radio label="A">A</el-radio>
-					    <el-radio label="B">B</el-radio>
-					    <el-radio label="C">C</el-radio>
-					 </el-radio-group>
-				</el-form-item>
+			<el-form-item label="联系地址">
+				<el-input style="width: 400px" type="text" v-model="ruleForm.address" :disabled="Disabled"></el-input>
+			</el-form-item>
 
-				<el-form-item label="联系人名称" prop="contactName">
-					<el-input v-model="ruleForm.contactName" :disabled="Disabled"></el-input>
-				</el-form-item>
+			<el-form-item label="邮箱">
+				<el-input style="width: 400px" type="text" v-model="ruleForm.email" :disabled="Disabled"></el-input>
+			</el-form-item>
 
-				<el-form-item label="联系人电话" prop="contactTel">
-					<el-input v-model="ruleForm.contactTel" :disabled="Disabled"></el-input>
-				</el-form-item>
+			<el-form-item label="QQ">
+				<el-input style="width: 400px" type="text" v-model="ruleForm.qq" :disabled="Disabled"></el-input>
+			</el-form-item>
 
-				<el-form-item label="联系人地址" prop="contactAddress">
-					<el-input v-model="ruleForm.contactAddress" :disabled="Disabled"></el-input>
-				</el-form-item>
-
-				<!-- prop="businessLicenseUrl" -->
-				<el-form-item label="营业执照">
+			<el-form-item label="身份证正面" v-if="nameTurn">
 					<el-upload
-					  :disabled="Disabled"
-					  :data="uploadDatas"
-					  :action="this.hostname+'/manage/sys/fileHandle/upload'"
+					  :action="this.hostname+'/api/dev/uploadpic'+this.url_token()"
+    				  :disabled="Disabled"
 					  class="avatar-uploader"
 					  :show-file-list="false"
 					  :on-success="yyleAvatarSuccess"
+					  :before-upload="beforeAvatarUpload">
+					  <!-- <div class="coverDialog" v-if="!btn_turn">
+						  <div class="layer" @click="handleFileEnlarge(ruleForm.businessLicenseUrl)">
+								<i class="el-icon-view"></i>
+							</div>
+							<div class="del">
+								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
+							</div>
+					  </div> -->
+					  <img v-if="ruleForm.cardupimage" :src="ruleForm.cardupimage" class="avatar">
+					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+					</el-upload>
+				</el-form-item>
+
+				<el-form-item label="身份证反面" v-if="nameTurn">
+					<el-upload
+					  :disabled="Disabled"
+					  :action="this.hostname+'/api/dev/uploadpic'+this.url_token()"
+					  class="avatar-uploader"
+					  :show-file-list="false"
+					  :on-success="cardDownSuccess"
+					  :before-upload="beforeAvatarUpload">
+					  <!-- <div class="coverDialog" v-if="!btn_turn">
+						  <div class="layer" @click="handleFileEnlarge(ruleForm.businessLicenseUrl)">
+								<i class="el-icon-view"></i>
+							</div>
+							<div class="del">
+								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
+							</div>
+					  </div> -->
+					  <img v-if="ruleForm.carddownimage" :src="ruleForm.carddownimage" class="avatar">
+					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+					</el-upload>
+				</el-form-item>
+
+				<!-- :disabled="Disabled" :data="uploadDatas" -->
+				<el-form-item label="营业执照" v-if="!nameTurn">
+					<el-upload
+					  :disabled="Disabled"
+					  :action="this.hostname+'/api/dev/uploadpic'+this.url_token()"
+					  class="avatar-uploader"
+					  :show-file-list="false"
+					  :on-success="businessSuccess"
+					  :before-upload="beforeAvatarUpload">
+					  <!-- <div class="coverDialog" v-if="!btn_turn">
+						  <div class="layer" @click="handleFileEnlarge(ruleForm.businessLicenseUrl)">
+								<i class="el-icon-view"></i>
+							</div>
+							<div class="del">
+								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
+							</div>
+					  </div> -->
+					  <img v-if="ruleForm.business_license" :src="ruleForm.business_license" class="avatar">
+					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+					</el-upload>
+				</el-form-item>
+
+				<!-- :disabled="Disabled" -->
+				<el-form-item label="开户许可证" v-if="!nameTurn">
+					<!-- <input type="file" /> -->
+					<el-upload
+					  :disabled="Disabled"
+					  :action="this.hostname+'/api/dev/uploadpic'+this.url_token()"
+					  class="avatar-uploader"
+					  :show-file-list="false"
+					  :on-success="open_licenseSuccess"
 					  :before-upload="beforeAvatarUpload">
 					  <div class="coverDialog" v-if="!btn_turn">
 						  <div class="layer" @click="handleFileEnlarge(ruleForm.businessLicenseUrl)">
@@ -82,427 +116,227 @@
 								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
 							</div>
 					  </div>
-					  <img v-if="ruleForm.businessLicenseUrl" :src="ruleForm.businessLicenseUrl" class="avatar">
+					  <img v-if="ruleForm.open_license" :src="ruleForm.open_license" class="avatar">
 					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
 					</el-upload>
 				</el-form-item>
 
-				<!-- prop="icpUrl" -->
-				<el-form-item label="ICP证书">
-					<el-upload
-					  :disabled="Disabled"
-					  class="avatar-uploader"
-					  :data="uploadDatas"
-					  :action="this.hostname+'/manage/sys/fileHandle/upload'"
-					  :show-file-list="false"
-					  :on-preview="IcpView"
-					  :on-remove="handleRemove"
-					  :on-success="handleAvatarSuccess"
-					  :before-upload="beforeAvatarUpload">
-					  <div class="coverDialog" v-if="!btn_turn">
-						  <div class="layer" @click="handleFileEnlarge(ruleForm.icpUrl)">
-								<i class="el-icon-view"></i>
-							</div>
-							<div class="del">
-								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
-							</div>
-					  </div>
-					  <img v-if="ruleForm.icpUrl" :src="ruleForm.icpUrl" class="avatar">
-					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-					</el-upload>
-				</el-form-item>
-				
-				<el-form-item label="其他资质">
-					<el-upload
-					  :limit="10"
-					  :disabled="Disabled"
-					  :data="uploadDatas"
-					  :action="this.hostname+'/manage/sys/fileHandle/upload'"
-					  list-type="picture-card"
-					  :file-list="fileList"
-					  :on-preview="handlePictureCardPreview"
-					  :on-success="otherAvatarSuccess"
-					  :on-remove="handleRemove">
-					  <i class="el-icon-plus"></i>
-					</el-upload>
-					<el-dialog visible.sync="dialogVisible">
-					  <img width="100%" :src="ruleForm.othersUrl" alt="">
-					</el-dialog>
-				</el-form-item>
+			<div class="person_title">{{title2}}</div>
 
-				<el-form-item label="邮箱通知">
-					<el-switch
-					  @change="mailStautsFn"
-					  on-text ="启用"
-                      off-text = "禁用"
-					  :disabled="Disabled"
-					  v-model="mailVal"
-					  on-color="#13ce66"
-					  off-color="#dadde5">
-					</el-switch>
-				</el-form-item>
-				
-				<!--  prop="budget" -->
-				<el-form-item label="总预算">
-					<el-input v-model="ruleForm.budget" type="number" :disabled="Disabled"></el-input>
-				</el-form-item>
-				<el-form-item label="单日预算">
-					<el-input v-model="ruleForm.base_dayBudget" type="number" :disabled="Disabled"></el-input>
-				</el-form-item>
+			<el-form-item label="纳税方式">
+				<el-radio-group @change="taxFn" v-model="ruleForm.tax_payment" :disabled="Disabled">
+					<el-radio label="0">一般纳税人</el-radio>
+					<el-radio label="1">小规模纳税人</el-radio>
+				</el-radio-group>
+			</el-form-item>
 
-				<!-- prop="descInfo" -->
-				<el-form-item label="备注">
-					<el-input
-					  :disabled="Disabled"
-					  type="textarea"
-					  :rows="4"
-					  placeholder="请输入内容"
-					  v-model="ruleForm.descInfo">
-					</el-input>
-					<span class="unit_infro">备注信息可以填写一些您所需要的其他信息</span>
-				</el-form-item>
-  <!-- <el-form-item>
-    <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-    <el-button @click="resetForm('ruleForm')">重置</el-button>
-  </el-form-item> -->
-</el-form>
-		</div>
+			<el-form-item label="发票类型">
+				<el-radio-group v-model="ruleForm.receipt_type" :disabled="Disabled">
+					<el-radio label="专用发票">专用发票</el-radio>
+				</el-radio-group>
+			</el-form-item>
+
+			<el-form-item label="发票税率">
+				<span>{{receiptTax}}</span>
+			</el-form-item>
+
+			<el-form-item label="账户名称">
+				<el-input style="width: 400px" type="text" v-model="ruleForm.bankuser" :disabled="Disabled"></el-input>
+			</el-form-item>
+
+			<el-form-item label="开户行">
+				<el-input style="width: 400px" type="text" v-model="ruleForm.bankname" :disabled="Disabled"></el-input>
+			</el-form-item>
+
+			<el-form-item label="银行账号">
+				<el-input style="width: 400px" type="text" v-model="ruleForm.bankaccount" :disabled="Disabled"></el-input>
+			</el-form-item>
+		</el-form>
+
+		<el-button class="editBtn" @click="editToFn" type="primary" plain v-if="btnShow">修改信息</el-button>
+		<el-button class="editBtn" @click="dialogVisible = true" type="primary" v-if="!btnShow">保存信息</el-button>
+
+
+		<!-- 弹窗提示 -->
+		<el-dialog
+			:visible.sync="dialogVisible"
+			width="50%"
+			top= "20vh">
+			<span style="font-size: 16px;">提交信息之后，该账号会进入审核中状态，在审核完结之前将不能修改信息，是否确认提交？</span>
+			<span slot="footer" class="dialog-footer">
+				<el-button @click="cancleFn">取 消</el-button>
+				<el-button type="primary" @click="saveFn">确 定</el-button>
+			</span>
+		</el-dialog>
+
 	</div>
 </template>
 <script>
 	export default {
 		data() {
 			return {
-				uploadDatas: {
-					bucket: "mddsp",
-					ohtersPic: []
-				},
-				fileList: [],
-				mailVal: false,
-				msg: "返回列表",
-				turn: false,
-				btn_turn: false,
-				imageUrl: "",
-				Disabled: "",
-				ruleForm: {},
-		        rules: {
-		          name: [
-		            { required: true, message: '这一项是必填的', trigger: 'blur' }
-		          ],
-		          email: [
-		            { required: true, message: '这一项是必填的', trigger: 'blur' }
-		          ],
-		          typeName: [
-		            { required: true, message: '这一项是必填的', trigger: 'change' }
-				  ],
-				   level: [
-		            { required: true, message: '这一项是必填的', trigger: 'change' }
-				  ],
-				   contactName: [
-		            { required: true, message: '这一项是必填的', trigger: 'blur' }
-				  ],
-				   contactTel: [
-		            { required: true, message: '这一项是必填的', trigger: 'blur' }
-				  ],
-				   contactAddress: [
-		            { required: true, message: '这一项是必填的', trigger: 'blur' }
-				  ],
-				   budget: [
-		            { required: true, message: '这一项是必填的', trigger: 'blur' }
-				  ],
-				   base_dayBudget: [
-		            { required: true, message: '这一项是必填的', trigger: 'blur' }
-				  ],
-				   descInfo: [
-		            { required: true, message: '这一项是必填的', trigger: 'blur' }
-				  ],
-				  icpUrl: [
-		            { required: true, message: '这一项是必填的', trigger: 'change' }
-				  ],
-				  businessLicenseUrl: [
-		            { required: true, message: '这一项是必填的', trigger: 'change' }
-				  ]
-		        },
-		        selectType: [],
-		        typeid: "",
-				typename: "",
-				isDisable: true,
-				statusRadio: true
-		      }
-			},
+				dialogVisible: false,
+				loading: true,
+				title: "基本信息",
+				title2: "财务信息",
+				Disabled: '',
+				massage: [],
+				msg: [],
+				ruleForm: [],
+				nameTurn: '',
+				receiptTax: '',
+				cardUp: '',
+				btnName: "修改信息",
+				btnShow: true,
+			}
+		},
 		mounted() {
-			this.Init(1);
+			var that = this;
+			that.$http.jsonp(that.hostname+"/api/dev/userinfo"+this.url_token()).then(function(response){
+                console.log(response.data);
+                // for(var i = 0;i < that.$data.massage.length;i++) {
+                // 	console.log(response.data.data.length);
+				// }
+				if(response.data.code == 1) {
+					that.loading = false;
+					that.ruleForm = response.data.data;
+
+					// 个人||公司展示区别
+					if(that.ruleForm.utype == "0") {
+						that.nameTurn = true;
+					}else {
+						that.nameTurn = false;
+					}
+
+					// 发票税率展示
+					if(that.ruleForm.tax_payment == "0") {
+						this.nameTurn = true;
+					}else {
+						this.nameTurn = false;
+					}
+					// console.log(that.msg);
+				}else {
+					that.$router.replace('/login');
+					that.$notify.error({
+						title: '温馨提示',
+						message: '您的账号在别处登录，请重新登录',
+					})
+				}
+            });
 		},
 		methods: {
-			Init(turn) {
-				var that = this;
-				var datas = {
-					id: this.$route.query.id
-				}
-				this.$axios.get(this.hostname+'/manage/dsp/userInfo/admin/toEdit',{params: datas}).then(function(res){
-                    // 响应成功回调
-                    console.log(res.data);
-					that.ruleForm = res.data;
-					that.selectDataFn();
-					//状态开关
-					if(that.ruleForm.onlineStatus == 1) {
-						that.statusRadio = true
-					}else {
-						that.statusRadio = false
-					}
-					// 审核状态判断
-					switch(res.data.proveStatus) {
-						case 0:
-							that.statusInfo = "未提交";
-							break;
-						case 1:
-							that.statusInfo = "审核中";
-							break;
-						case 2:
-							that.statusInfo = "审核成功";
-							that.isDisable = null
-							break;
-						case 3:
-							that.statusInfo = "审核失败";
-							break;
-					}
-                    that.uploadDatas.ohtersPic = that.ruleForm.othersUrl.split(',');
-                    if(turn == 1) {
-                    	// 多张图片上传渲染
-	                    for(var i = 0,L = that.ruleForm.othersUrl.split(',').length; i < L; i++) {
-	                    	that.fileList.push({url: that.ruleForm.othersUrl.split(',')[i]});
-	                    	// that.fileList = [{url: "http://peiema7sz.bkt.clouddn.com/mddsp-20180904174116@|@jiantou.png"},{url: "http://peiema7sz.bkt.clouddn.com/mddsp-20180904174116@|@jiantou.png"}];
-	                    }
-                    }
-                    // 邮箱是否通知
-                    if(that.ruleForm.isNotifyByEmail == 0) {
-                    	that.mailVal = false;
-                    	that.ruleForm.isNotifyByEmailStauts = false;
-                    }else {
-                    	that.mailVal = true;
-                    	that.ruleForm.isNotifyByEmailStauts = true;
-                    }
-                }, function(err){
-                    console.log(err);
-                })
-			},
-			// 下拉菜单Init
-			selectDataFn() {
-				var that = this;
-				let username = localStorage.getItem('ms_username');
-				var datas = {
-					busNum: "b001"
-				}
-				this.$axios.get(this.hostname+'/manage/dsp/param/listDspConfigData',{params: datas}).then(function(res){
-                    // 响应成功回调
-                    console.log(res.data);
-                    that.selectType = res.data;
-                }, function(err){
-                    console.log(err);
-                })
-			},
-			goBack() {
-				this.$router.go(-1);
-			},
-			EditFn() {
+			editToFn() {
 				this.Disabled = null;
-				this.btn_turn = true;
+				this.btnShow = false;
 			},
-			cancelFn() {
-				this.Disabled = "";
-				this.btn_turn = false;
-				this.Init();
-			},
-			IcpView(res,file) {
-				console.log(res+"66:"+file);
-			},
-			handleAvatarSuccess(res, file) {
-				if(res.resultCode == 200) {
-					this.ruleForm.icpUrl = res.data;
-				}
-				console.log(res);
-		        this.imageUrl = URL.createObjectURL(file.raw);
-		        console.log("666"+this.imageUrl);
-		    },
-		    otherAvatarSuccess(res) {
-		    	console.log(res);
-		    	if(res.resultCode == 200) {
-		    		this.uploadDatas.ohtersPic.push(res.data);
-					this.ruleForm.othersUrl = res.data;
-				}
-				console.log(this.uploadDatas);
-		    },
-		    yyleAvatarSuccess(res) {
-		    	if(res.resultCode == 200) {
-					this.ruleForm.businessLicenseUrl = res.data;
-				}
-		    },
-		    beforeAvatarUpload(file) {
-		        // const isJPG = file.type === 'image/jpeg';
-		        // const isLt2M = file.size / 1024 / 1024 < 2;
-		        // if (!isJPG) {
-		        //   this.$message.error('上传头像图片只能是 JPG 格式!');
-		        // }
-		        // if (!isLt2M) {
-		        //   this.$message.error('上传头像图片大小不能超过 2MB!');
-		        // }
-		        // return isJPG && isLt2M;
-		    },
-		    handleFileRemove(a) {
-				console.log(a);
-			},
-			// 预览查看图片
-			handleFileEnlarge(urls) {
-				window.open(urls);
-			},
-		    // 删除上传图片
-		    handleRemove(file) {
-		    	console.log(file.url);
-		    	for(var i = 0, L = this.uploadDatas.ohtersPic.length; i < L; i++) {
-		    		if(file.url == this.uploadDatas.ohtersPic[i]) {
-		    			console.log(i);
-		    			this.uploadDatas.ohtersPic.splice(i,1);
-		    		}
-		    	}
-			},
-			handlePictureCardPreview(val) {
-				window.open(val.url);
-			},
-		    mailStautsFn(val) {
-		    	console.log(val);
-		    	if(val){
-		    		this.ruleForm.isNotifyByEmail = 1
-		    	}else {
-		    		this.ruleForm.isNotifyByEmail = 0
-		    	}
-		    },
-		    // 下拉选项选择
-		    selectFn(event, item) {
-		    	for(var i = 0, L = this.selectType.length; i < L; i++) {
-		    		if(this.selectType[i].valueStr == event) {
-		    			this.typeid = this.selectType[i].valueStr
-		    			this.typename = this.selectType[i].keyStr
-		    		}
-		    	}
-		    },
-		    // 保存操作
-			saveFn() {
-				var that = this;
-				that.$refs.ruleForm.validate((valid) => {
-					if(valid) {
-						var params = new URLSearchParams();
-						params.append('id', this.$route.query.id);
-						params.append('name', that.ruleForm.name);
-						params.append('email', that.ruleForm.email);
-						params.append('typeId', that.typeid);
-						params.append('typeName', that.typename);
-						params.append('level', that.ruleForm.level);
-						params.append('contactName', that.ruleForm.contactName);
-						params.append('contactAddress', that.ruleForm.contactAddress);
-						params.append('contactTel', that.ruleForm.contactTel);
-						params.append('businessLicenseUrl', that.ruleForm.businessLicenseUrl);
-						params.append('icpUrl', that.ruleForm.icpUrl);
-						params.append('othersUrl', that.uploadDatas.ohtersPic);
-						params.append('isNotifyByEmail', that.ruleForm.isNotifyByEmail);
-						params.append('descInfo', that.ruleForm.descInfo);
-
-						params.append('budget', that.ruleForm.budget); // 总预算
-						params.append('base_dayBudget', that.ruleForm.base_dayBudget); // 单日预算
-						
-
-						that.$axios.post(that.hostname+'/manage/dsp/userInfo/admin/update',params).then(function(res){
-							// 响应成功回调
-							console.log(res.data);
-							if(res.data.resultCode == 200) {
-								that.Disabled = "";
-								that.btn_turn = false;
-								that.$notify({
-								title: '成功',
-								message: res.data.message,
-								type: 'success'
-								});
-							}else {
-								that.$notify.error({
-								title: '错误',
-								message: res.data.message
-								});
-							}
-						}, function(err){
-							console.log(err);
-						})
-					}else {
-						that.$message.error('请检查带*输入框否填写数据和图片是否上传');
-					}
-				})
-			
-			},
-			//公用函数=>改变状态fn
-			changeFn(val) {
-				var Values;
-				if(val) {
-					Values = 1
+			nameFn(val) {
+				if(val == "0") {
+					this.nameTurn = true;
 				}else {
-					Values = 0
+					this.nameTurn = false;
 				}
-				this.publicFn.statusInitFn(this,this.ruleForm.id,Values,'/manage/dsp/userInfo/admin/changeStatus');
+			},
+			taxFn(val) {
+				if(val == 0) {
+					this.receiptTax = "6%"
+				}else {
+					this.receiptTax = "3%"
+				}
+			},
+			yyleAvatarSuccess(res) {
+				this.ruleForm.cardupimage = res;
+			},
+			cardDownSuccess(res) {
+				this.ruleForm.carddownimage = res;
+			},
+			businessSuccess(res) {
+				this.ruleForm.business_license = res;
+			},
+			open_licenseSuccess(res) {
+				this.ruleForm.open_license = res;
+			},
+			beforeAvatarUpload(res,file) {
+				// console.log(res);
+				// console.log(file);
+			},
+			uploadFn(item) {
+				console.log(item);
+				this.cardUp = item;
+				// let formData = new FormData()
+				// formData.append('file', item.file)
+				// formData.append('type', 'SKU')
+				// formData.append('id', this.$route.params.id)
+				// console.log('上传图片接口-参数', item.file)
+				// upLoadPicFromWeApp(formData).then(res => {
+				// console.log('上传图片接口-数据', res)
+				// this.formInline.pic_data[this.picIdx].img_url = res.msg
+				// }).catch(err => {
+				// this.$message.error('上传失败，请重新上传')
+				// console.log('报错', err)
+				// })
+			},
+			// 保存表单信息
+			saveFn() {
+				let that = this;
+				that.dialogVisible = false;
+				var Datas = {
+					email: that.ruleForm.email,
+					utype: that.ruleForm.utype,
+					name: that.ruleForm.name,
+					mobile: that.ruleForm.mobile,
+					compayname: that.ruleForm.compayname,
+					qq: that.ruleForm.qq,
+					address: that.ruleForm.address,
+					cardno: that.ruleForm.cardno,
+					bankuser: that.ruleForm.bankuser,
+					bankname: that.ruleForm.bankname,
+					bankaccount: that.ruleForm.bankaccount,
+					cardupimage: that.ruleForm.cardupimage,
+					carddownimage: that.ruleForm.carddownimage,
+					business_license: that.ruleForm.business_license,
+					open_license: that.ruleForm.open_license,
+					tax_payment: that.ruleForm.tax_payment,
+					realname: that.ruleForm.realname
+				}
+				that.$http.post(that.hostname+"/api/dev/updateuserinfo"+that.url_token(), Datas).then((response) => {
+					console.log(response);
+
+					that.$notify.success({
+						title: '成功',
+						message: '保存成功！',
+					});
+					that.$router.push("/personal");
+					that.Disabled = "";
+					that.btnShow = true;
+
+				}, (response) => {
+					// error callback
+				});
+			},
+			cancleFn() {
+				this.dialogVisible = false;
+				this.Disabled = "";
+				this.btnShow = true;
 			}
-    	}
+		}
 	}
 </script>
-<style scoped>
-	.unit_one_top {
+<style>
+	.person_title {
+		font-size: 1.1rem;
+		font-weight: bold;
+		color: #324157;
+		height: 2.4rem;
 		width: 100%;
-		height: 2vw;
-		line-height: 2vw;
-		/*background: red;*/
+		/* border-bottom: 1px solid #BFCBD9; */
 	}
-		.unit_o_left_btn {
-			float: left;
+		.editBtn {
+			margin-top: 30px;
 			width: 120px;
-			height: 100%;
-			text-align: center;
-			background: #D8D8D8;
-			font-size: .9rem;
-			cursor: pointer;
+			margin-left: 40%;
 		}
-		.unit_o_left_btn:hover {
-			font-weight: bold;
-		}
-			.unit_o_left_btn i {
-				font-size: .8rem;
-				margin-right: 5px;
-			}
-		.unit_o_right {
-			float: right;
-			width: 30%;
-			height: 100%;
-		}
-		.unit_o_right button {
-			float: right;
-			margin-left: 15px;
-			height: 90%;
-			width: 80px;
-			font-size: .9rem;
-		}
-		.unit_o_right label {
-			float: right;
-			margin-right: 15px;
-			margin-top: 7px;
-		}
-
-		.unit_o_content,.unit_o_content2 {
-			width: 100%;
-			margin-top: 1vw;
-			padding: 2vw 0 .2vw 0;
-			background: #FAFAFA;
-		}
-			.unit_lafite .unit_o_content form,.unit_o_content2 form {
-				width: 70%;
-				margin-left: 15%;
-			}
-
-		.unit_infro {
-			color: gray;
+		.mian_ruleForm {
+			margin-top: 20px;
 		}
 
 		/*图片上传样式*/
@@ -546,17 +380,7 @@
 			display: block;
 		}
 		
-		 .layer {
-			  float: left;
-			  width: 40%;
-			  font-size: 1.2vw;
-			  margin-top: 40%;
-			  margin-left: 15%;
-		  }
-		  .del {
-			  float: left;
-			  width: 20%;
-			  font-size: 1.2vw;
-			  margin-top: 40%;
-		  }
+		.el-dialog--small {
+			width: 20%;
+		}
 </style>

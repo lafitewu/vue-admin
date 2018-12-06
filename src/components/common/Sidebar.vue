@@ -25,7 +25,7 @@
             return {
                 items: [
                     {
-                        icon: 'el-icon-menu',
+                        icon: 'iconfont el-icons-home',
                         index: 'readme',
                         title: '首页'
                     },
@@ -42,41 +42,10 @@
                                  index: 'setAd',
                                  title: '广告设置'
                              },
-                             // {
-                             //     index: 'adList',
-                             //     title: '过滤广告'
-                             // },
-//                             {
-//                                 index: 'Income',
-//                                 title: '收入报表'
-//                             }
                          ]
                      },
-                    // {
-                    //     icon: 'el-icon-date',
-                    //     index: '3',
-                    //     title: '表单',
-                    //     subs: [
-                    //         {
-                    //             index: 'baseform',
-                    //             title: '基本表单'
-                    //         },
-                    //         {
-                    //             index: 'vueeditor',
-                    //             title: '编辑器'
-                    //         },
-                    //         {
-                    //             index: 'markdown',
-                    //             title: 'markdown'
-                    //         },
-                    //         {
-                    //             index: 'upload',
-                    //             title: '文件上传'
-                    //         }
-                    //     ]
-                    // },
                     {
-                        icon: 'el-icon-document',
+                        icon: 'iconfont el-icons-personal',
                         index: '4',
                         title: '个人中心',
                         subs: [
@@ -90,16 +59,22 @@
                             }
                         ]
                     },
-                    // {
-                    //     icon: 'el-icon-star-on',
-                    //     index: 'basecharts',
-                    //     title: '图表'
-                    // },
-                    // {
-                    //     icon: 'el-icon-upload2',
-                    //     index: 'drag',
-                    //     title: '拖拽'
-                    // }
+                    {
+                        icon: 'iconfont el-icons-countCenter',
+                        index: '3',
+                        title: '财务中心',
+                        subs: [
+                            {
+                                index: 'account',
+                                title: '财务记录'
+                            },
+                            {
+                                index: 'cash',
+                                title: '申请提款'
+                            }
+                        ]
+                    },
+                   
                 ]
             }
         },

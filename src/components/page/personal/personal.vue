@@ -6,139 +6,55 @@
 				<span style="color: #20A0FF;font-weight: bold;">{{ruleForm.status}}</span>
 			</el-form-item>
 			<el-form-item label="身份类型">
-				<el-radio-group :disabled="Disabled" @change="nameFn" v-model="ruleForm.utype">
-					<el-radio label="1">公司</el-radio>
-					<el-radio label="0">个人</el-radio>
-				</el-radio-group>
+				<span>{{cardType}}</span>
 			</el-form-item>
-			<el-form-item label="公司名称" v-if="!nameTurn">
-				<el-input style="width: 400px" type="text" v-model="ruleForm.compayname" :disabled="Disabled"></el-input>
+			<el-form-item label="公司名称" v-if="nameTurn">
+				<span>{{ruleForm.compayname}}</span>
 			</el-form-item>
-			<el-form-item label="个人名称" :disabled="Disabled" v-if="nameTurn">
-				<el-input style="width: 400px" type="text" v-model="ruleForm.realname" :disabled="Disabled"></el-input>
+			<el-form-item label="个人名称" :disabled="Disabled" v-if="!nameTurn">
+				<span>{{ruleForm.realname}}</span>
 			</el-form-item>
 
-			<el-form-item label="身份证号码" v-if="nameTurn">
-				<el-input style="width: 400px" type="text" v-model="ruleForm.cardno" :disabled="Disabled"></el-input>
+			<el-form-item label="身份证号码" v-if="!nameTurn">
+				<span>{{ruleForm.cardno}}</span>
 			</el-form-item>
 
 			<el-form-item label="联系地址">
-				<el-input style="width: 400px" type="text" v-model="ruleForm.address" :disabled="Disabled"></el-input>
+				<span>{{ruleForm.address}}</span>
 			</el-form-item>
 
 			<el-form-item label="邮箱">
-				<el-input style="width: 400px" type="text" v-model="ruleForm.email" :disabled="Disabled"></el-input>
+				<span>{{ruleForm.email}}</span>
 			</el-form-item>
 
 			<el-form-item label="QQ">
-				<el-input style="width: 400px" type="text" v-model="ruleForm.qq" :disabled="Disabled"></el-input>
+				<span>{{ruleForm.qq}}</span>
 			</el-form-item>
 
-			<!-- :disabled="Disabled"
-					  :data="uploadDatas"
-					  :action="this.hostname+'/manage/sys/fileHandle/upload'" -->
-			<el-form-item label="身份证正面" v-if="nameTurn">
-					<el-upload
-					  
-					  :action="this.hostname+'/api/dev/uploadpic'+this.url_token()"
-    				  :disabled="Disabled"
-					  class="avatar-uploader"
-					  :show-file-list="false"
-					  :on-success="yyleAvatarSuccess"
-					  :before-upload="beforeAvatarUpload">
-					  <!-- <div class="coverDialog" v-if="!btn_turn">
-						  <div class="layer" @click="handleFileEnlarge(ruleForm.businessLicenseUrl)">
-								<i class="el-icon-view"></i>
-							</div>
-							<div class="del">
-								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
-							</div>
-					  </div> -->
-					  <img v-if="ruleForm.businessLicenseUrl" :src="ruleForm.businessLicenseUrl" class="avatar">
-					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-					</el-upload>
-				</el-form-item>
+			<el-form-item label="身份证正面" v-if="!nameTurn">
+				<span>{{ruleForm.cardupimage != "" ? "已上传": "未上传"}}</span>
+			</el-form-item>
 
-				<el-form-item label="身份证反面" v-if="nameTurn">
-					<el-upload
-					  :disabled="Disabled"
-					  :action="this.hostname+'/manage/sys/fileHandle/upload'"
-					  class="avatar-uploader"
-					  :show-file-list="false"
-					  :on-success="yyleAvatarSuccess"
-					  :before-upload="beforeAvatarUpload">
-					  <!-- <div class="coverDialog" v-if="!btn_turn">
-						  <div class="layer" @click="handleFileEnlarge(ruleForm.businessLicenseUrl)">
-								<i class="el-icon-view"></i>
-							</div>
-							<div class="del">
-								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
-							</div>
-					  </div> -->
-					  <img v-if="ruleForm.businessLicenseUrl" :src="ruleForm.businessLicenseUrl" class="avatar">
-					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-					</el-upload>
-				</el-form-item>
+			<el-form-item label="身份证反面" v-if="!nameTurn">
+				<span>{{ruleForm.carddownimage != "" ? "已上传": "未上传"}}</span>
+			</el-form-item>
 
-				<!-- :disabled="Disabled" :data="uploadDatas" -->
-				<el-form-item label="营业执照" v-if="!nameTurn">
-					<el-upload
-					  :disabled="Disabled"
-					  
-					  :action="this.hostname+'/manage/sys/fileHandle/upload'"
-					  class="avatar-uploader"
-					  :show-file-list="false"
-					  :on-success="yyleAvatarSuccess"
-					  :before-upload="beforeAvatarUpload">
-					  <!-- <div class="coverDialog" v-if="!btn_turn">
-						  <div class="layer" @click="handleFileEnlarge(ruleForm.businessLicenseUrl)">
-								<i class="el-icon-view"></i>
-							</div>
-							<div class="del">
-								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
-							</div>
-					  </div> -->
-					  <img v-if="ruleForm.businessLicenseUrl" :src="ruleForm.businessLicenseUrl" class="avatar">
-					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-					</el-upload>
-				</el-form-item>
+			<el-form-item label="营业执照" v-if="nameTurn">
+				<span>{{ruleForm.business_license != "" ? "已上传": "未上传"}}</span>
+			</el-form-item>
 
-				<!-- :disabled="Disabled" -->
-				<el-form-item label="开户许可证" v-if="!nameTurn">
-					<!-- <input type="file" /> -->
-					<el-upload
-					  :disabled="Disabled"
-					  :action="this.hostname+'/manage/sys/fileHandle/upload'"
-					  class="avatar-uploader"
-					  :show-file-list="false"
-					  :on-success="yyleAvatarSuccess"
-					  :before-upload="beforeAvatarUpload">
-					  <div class="coverDialog" v-if="!btn_turn">
-						  <div class="layer" @click="handleFileEnlarge(ruleForm.businessLicenseUrl)">
-								<i class="el-icon-view"></i>
-							</div>
-							<div class="del">
-								<i @click="handleFileRemove(index)" class="el-icon-delete2"></i>
-							</div>
-					  </div>
-					  <img v-if="ruleForm.businessLicenseUrl" :src="ruleForm.businessLicenseUrl" class="avatar">
-					  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-					</el-upload>
-				</el-form-item>
+			<el-form-item label="开户许可证" v-if="nameTurn">
+				<span>{{ruleForm.open_license != "" ? "已上传": "未上传"}}</span>
+			</el-form-item>
 
 			<div class="person_title">{{title2}}</div>
 
 			<el-form-item label="纳税方式">
-				<el-radio-group @change="taxFn" v-model="ruleForm.tax_payment" :disabled="Disabled">
-					<el-radio label="0">一般纳税人</el-radio>
-					<el-radio label="1">小规模纳税人</el-radio>
-				</el-radio-group>
+				{{ruleForm.tax_payment == "0" ? "一般纳税人": "小规模纳税人"}}
 			</el-form-item>
 
 			<el-form-item label="发票类型">
-				<el-radio-group v-model="ruleForm.receipt_type" :disabled="Disabled">
-					<el-radio label="专用发票">专用发票</el-radio>
-				</el-radio-group>
+				<span>专用发票</span>
 			</el-form-item>
 
 			<el-form-item label="发票税率">
@@ -146,34 +62,20 @@
 			</el-form-item>
 
 			<el-form-item label="账户名称">
-				<el-input style="width: 400px" type="text" v-model="ruleForm.bankuser" :disabled="Disabled"></el-input>
+				<span>{{ruleForm.bankuser}}</span>
 			</el-form-item>
 
 			<el-form-item label="开户行">
-				<el-input style="width: 400px" type="text" v-model="ruleForm.bankname" :disabled="Disabled"></el-input>
+				<span>{{ruleForm.bankname}}</span>
 			</el-form-item>
 
 			<el-form-item label="银行账号">
-				<el-input style="width: 400px" type="text" v-model="ruleForm.bankaccount" :disabled="Disabled"></el-input>
+				<span>{{ruleForm.bankaccount}}</span>
 			</el-form-item>
 		</el-form>
 
 		<el-button class="editBtn" @click="editToFn" type="primary" plain v-if="btnShow">修改信息</el-button>
-		<el-button class="editBtn" @click="dialogVisible = true" type="primary" v-if="!btnShow">保存信息</el-button>
-
-
-		<!-- 弹窗提示 -->
-		<el-dialog
-			:visible.sync="dialogVisible"
-			width="50%"
-			top= "20vh">
-			<span style="font-size: 16px;">提交信息之后，该账号会进入审核中状态，在审核完结之前将不能修改信息，是否确认提交？</span>
-			<span slot="footer" class="dialog-footer">
-				<el-button @click="cancleFn">取 消</el-button>
-				<el-button type="primary" @click="saveFn">确 定</el-button>
-			</span>
-		</el-dialog>
-
+		<!-- <el-button class="editBtn" @click="dialogVisible = true" type="primary" v-if="!btnShow">保存信息</el-button> -->
 	</div>
 </template>
 <script>
@@ -192,7 +94,8 @@
 				receiptTax: '',
 				cardUp: '',
 				btnName: "修改信息",
-				btnShow: true
+				btnShow: true,
+				cardType: ''
 			}
 		},
 		mounted() {
@@ -207,10 +110,12 @@
 					that.ruleForm = response.data.data;
 
 					// 个人||公司展示区别
-					if(that.ruleForm.utype == "0") {
+					if(that.ruleForm.utype == "1") {
 						that.nameTurn = true;
+						that.cardType = "公司"
 					}else {
 						that.nameTurn = false;
+						that.cardType = "个人"
 					}
 
 					// 发票税率展示
@@ -231,74 +136,15 @@
 		},
 		methods: {
 			editToFn() {
-				this.Disabled = null;
-				this.btnShow = false;
-			},
-			nameFn(val) {
-				if(val == "0") {
-					this.nameTurn = true;
-				}else {
-					this.nameTurn = false;
-				}
-			},
-			taxFn(val) {
-				if(val == 0) {
-					this.receiptTax = "6%"
-				}else {
-					this.receiptTax = "3%"
-				}
-			},
-			yyleAvatarSuccess(res,file) {
-				console.log(res);
-				// console.log(file);
-			},
-			beforeAvatarUpload(res,file) {
-				// console.log(res);
-				// console.log(file);
-			},
-			uploadFn(item) {
-				console.log(item);
-				this.cardUp = item;
-				// let formData = new FormData()
-				// formData.append('file', item.file)
-				// formData.append('type', 'SKU')
-				// formData.append('id', this.$route.params.id)
-				// console.log('上传图片接口-参数', item.file)
-				// upLoadPicFromWeApp(formData).then(res => {
-				// console.log('上传图片接口-数据', res)
-				// this.formInline.pic_data[this.picIdx].img_url = res.msg
-				// }).catch(err => {
-				// this.$message.error('上传失败，请重新上传')
-				// console.log('报错', err)
-				// })
-			},
-			// 保存表单信息
-			saveFn() {
-				let that = this;
-				that.dialogVisible = false;
-				that.$http.post(that.hostname+"/api/dev/updateuserinfo"+that.url_token(), {cardupimage: that.cardUp}).then((response) => {
-					console.log(response);
-
-					that.$notify.success({
-						title: '成功',
-						message: '保存成功！',
-					});
-					that.Disabled = "";
-					that.btnShow = true;
-
-				}, (response) => {
-					// error callback
-				});
-			},
-			cancleFn() {
-				this.dialogVisible = false;
-				this.Disabled = "";
-				this.btnShow = true;
+				this.$router.push("/personal_Edit");
 			}
 		}
 	}
 </script>
-<style>
+<style scoped>
+.content {
+    background: #EFEFEF;
+}
 	.person_title {
 		font-size: 1.1rem;
 		font-weight: bold;

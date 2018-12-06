@@ -52,56 +52,6 @@
 		data() {
 			return {
 				msg: '过滤广告',
-				tableData3: [{
-		          id: '2016-05-03',
-		          icon: '王小虎',
-		          adname: '上海市普陀区金沙江路 1518 弄',
-		          pagename: 'yttsdsdsds.apk',
-		          startTime: '2016-05-03',
-		          endTime: '2016-05-03'
-		        }, {
-		          id: '2016-05-02',
-		          icon: '王小虎',
-		          adname: '上海市普陀区金沙江路 1518 弄',
-		          pagename: 'yttsdsdsds.apk',
-		          startTime: '2016-05-03',
-		          endTime: '2016-05-03'
-		        }, {
-		          id: '2016-05-04',
-		          icon: '王小虎',
-		          adname: '上海市普陀区金沙江路 1518 弄',
-		          pagename: 'yttsdsdsds.apk',
-		          startTime: '2016-05-03',
-		          endTime: '2016-05-03'
-		        }, {
-		          id: '2016-05-01',
-		          icon: '王小虎',
-		          adname: '上海市普陀区金沙江路 1518 弄',
-		          pagename: 'yttsdsdsds.apk',
-		          startTime: '2016-05-03',
-		          endTime: '2016-05-03'
-		        }, {
-		          id: '2016-05-08',
-		          icon: '王小虎',
-		          adname: '上海市普陀区金沙江路 1518 弄',
-		          pagename: 'yttsdsdsds.apk',
-		          startTime: '2016-05-03',
-		          endTime: '2016-05-03'
-		        }, {
-		          id: '2016-05-06',
-		          icon: '王小虎',
-		          adname: '上海市普陀区金沙江路 1518 弄',
-		          pagename: 'yttsdsdsds.apk',
-		          startTime: '2016-05-03',
-		          endTime: '2016-05-03'
-		        }, {
-		          id: '2016-05-07',
-		          icon: '王小虎',
-		          adname: '上海市普陀区金沙江路 1518 弄',
-		          pagename: 'yttsdsdsds.apk',
-		          startTime: '2016-05-03',
-		          endTime: '2016-05-03'
-		        }],
 		        multipleSelection: []
 			}
 		},

@@ -76,6 +76,14 @@ export default new Router({
                 {
                     path: '/adList',
                     component: resolve => require(['../components/page/appCenter/adList'], resolve)  
+                },
+                {
+                    path: '/account',
+                    component: resolve => require(['../components/page/accountCenter/accountAll'], resolve)  
+                },
+                {
+                    path: '/cash',
+                    component: resolve => require(['../components/page/accountCenter/cash'], resolve)  
                 }
             ]
         },
