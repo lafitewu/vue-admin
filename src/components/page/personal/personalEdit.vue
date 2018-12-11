@@ -153,9 +153,11 @@
 			</el-form-item>
 		</el-form>
 		
-		<el-button class="editBtn" @click="goBack" type="primary" plain v-if="btnShow">返回</el-button>
-		<el-button class="editBtn" @click="editToFn" type="primary" plain v-if="btnShow">修改信息</el-button>
-		<el-button class="editBtn" @click="dialogVisible = true" type="primary" v-if="!btnShow">保存信息</el-button>
+		<!-- v-if="btnShow" -->
+		<el-button class="editBtn" @click="goBack" type="primary" plain >返回</el-button>
+		<!-- <el-button class="editBtn" @click="editToFn" type="primary" plain v-if="btnShow">修改信息</el-button> -->
+		<!--  v-if="!btnShow" -->
+		<el-button class="editBtn" @click="dialogVisible = true" type="primary">保存信息</el-button>
 
 
 		<!-- 弹窗提示 -->
@@ -180,7 +182,7 @@
 				loading: true,
 				title: "基本信息",
 				title2: "财务信息",
-				Disabled: '',
+				// Disabled: '',
 				massage: [],
 				msg: [],
 				ruleForm: [],
@@ -332,8 +334,8 @@
 			},
 			cancleFn() {
 				this.dialogVisible = false;
-				this.Disabled = "";
-				this.btnShow = true;
+				// this.Disabled = "";
+				// this.btnShow = true;
 			},
 			goBack() {
 				this.$router.push("/personal");

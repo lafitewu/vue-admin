@@ -213,7 +213,11 @@
 		},
 		methods: {
 			editToFn() {
-				this.$router.push("/personal_Edit");
+				if(this.ruleForm.status == "审核中") {
+					this.$message.error('正在审核中，不可编辑');
+				}else {
+					this.$router.push("/personal_Edit");
+				}
 			}
 		}
 	}
