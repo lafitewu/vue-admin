@@ -101,7 +101,7 @@
 		   },
 		   cashFn() {
 			   let that = this;
-			   if((that.pass_arr[8].holder >= 500) && (that.checked)) {
+			   if((that.pass_arr[8].holder.split('.').length == 1) && (that.pass_arr[8].holder >= 500) && (that.checked)) {
 					var datas = {
 						amount: that.pass_arr[8].holder
 					}

@@ -26,10 +26,6 @@ export default new Router({
                     component: resolve => require(['../components/page/VueTable.vue'], resolve)     // vue-datasource组件
                 },
                 {
-                    path: '/Income',
-                    component: resolve => require(['../components/page/Income.vue'], resolve)     // vue-datasource组件
-                },
-                {
                     path: '/baseform',
                     component: resolve => require(['../components/page/BaseForm.vue'], resolve)
                 },
@@ -83,7 +79,15 @@ export default new Router({
                 },
                 {
                     path: '/cash',
-                    component: resolve => require(['../components/page/accountCenter/cash'], resolve)  
+                    component: resolve => require(['../components/page/accountCenter/cash'], resolve)  //提现页面
+                },
+                {
+                    path: '/Income',
+                    component: resolve => require(['../components/page/dataCenter/Income'], resolve)  //收入报表
+                },
+                {
+                    path: '/Application',
+                    component: resolve => require(['../components/page/dataCenter/application'], resolve)  //收入报表
                 }
             ]
         },

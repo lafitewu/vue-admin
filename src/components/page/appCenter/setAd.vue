@@ -116,7 +116,7 @@
 					</el-table>
 				</div>
 			</el-collapse-item>
-			<el-collapse-item :title="msg5" name="2">
+			<!-- <el-collapse-item :title="msg5" name="2">
 				<div class="adsTable">
 					<el-table
 						v-loading="loading" element-loading-text="加载中...."
@@ -153,19 +153,9 @@
 						label="包名"
 						show-overflow-tooltip>
 						</el-table-column>
-						<!-- <el-table-column
-						prop="startTime"
-						label="投放开始时间"
-						show-overflow-tooltip>
-						</el-table-column>
-						<el-table-column
-						prop="endTime"
-						label="投放结束时间"
-						show-overflow-tooltip>
-						</el-table-column> -->
 					</el-table>
 				</div>
-			</el-collapse-item>
+			</el-collapse-item> -->
 			</el-collapse>
 		<div class="adSave" @click="saveFn">确认保存</div>
 	</div>

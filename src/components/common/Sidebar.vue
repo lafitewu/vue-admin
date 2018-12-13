@@ -32,7 +32,7 @@
                     },
                      {
                          icon: 'el-icon-menu',
-                         index: '2',
+                         index: '1',
                          title: '应用中心',
                          subs: [
                              {
@@ -42,6 +42,21 @@
                              {
                                  index: 'setAd',
                                  title: '广告设置'
+                             },
+                         ]
+                     },
+                     {
+                         icon: 'iconfont el-icons-datas',
+                         index: '2',
+                         title: '数据中心',
+                         subs: [
+                             {
+                                 index: 'Income',
+                                 title: '收入报表'
+                             },
+                             {
+                                 index: 'Application',
+                                 title: '应用报表'
                              },
                          ]
                      },
