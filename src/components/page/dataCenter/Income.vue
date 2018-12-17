@@ -65,132 +65,27 @@ import echarts from 'echarts'
                     // {name: "更多详情",value: "more"}
                 ],
                 KindsBtn: [
-                    {name: "总收入概括"},
-                    {name: "CPA广告收入"},
-                    {name: "加粉广告收入"},
-                    {name: "CPL广告收入"}
+                    {name: "总收入概括",value: "total"},
+                    {name: "CPA广告收入",value: "cpa"},
+                    {name: "加粉广告收入",value: "mini"},
+                    {name: "CPL广告收入",value: "cpl"}
                 ],
                 countdata: [],
                table: [
-                    {name: "日期",prop: "dates",turn: true},
-                    {name: "CPA广告",prop: "all_in"},
-                    {name: "加粉广告",prop: "cpl_in"},
-                    {name: "CPL广告",prop: "cpa_in"},
-                    {name: "当天收入",prop: "wx"}
+                    {name: "日期",prop: "date",turn: true},
+                    {name: "CPA广告",prop: "cpa"},
+                    {name: "加粉广告",prop: "mini"},
+                    {name: "CPL广告",prop: "cpl"},
+                    {name: "当天收入",prop: "total"}
                     // {name: "唤醒任务", prop: "wakeup"}
                ],
                tableData: [],
                 Xdate: null,
-                val_date: null
+                val_date: "total"
             }
         },
         mounted() {
             this.init();
-
-            // 初始化echarts
-            // let myChart = echarts.init(document.getElementById('mychart'))
-            // 封装调用api
-            // that.fn = function () {
-            //     // 金额总计api
-            //     that.$http.jsonp(that.hostname+"/api/dev/summary"+this.url_token()).then(function(response){
-            //         // 防止多处登录
-            //         if(response.body.code == 0) {
-            //             this.$router.replace('/login');
-            //             this.$notify.error({
-            //               title: '温馨提示',
-            //               message: '您的账号在别处登录，请重新登录',
-            //             })
-            //         }
-            //         // 总计列表数据渲染
-            //         that.countdata = [response.data.data.incometoday,response.data.data.incomeyesterday,response.data.data.balance,response.data.data.totalbalance]
-            //         for(let i = 0;i < that.countdata.length; i++) {
-            //             that.arr[i].val = that.countdata[i]
-            //         }
-            //     });
-            //     // 日期数据api
-            //     that.$http.post(that.hostname+"/api/dev/incomeRange"+this.url_token(),{days: that.show_day, start: that.startDate, end: that.endDate}).then(function(response){
-            //         console.log(response);
-            //         // x轴数据
-            //         that.loading = false;
-            //         that.Xdate = response.data.data.date
-            //         // 图表val
-            //         that.val_date = response.data.data.total
-            //         var len = response.data.data.date.length,obj;
-            //         for(var i = 0; i < len; i++) {
-            //            obj = {dates: response.data.data.date[i],all_in: response.data.data.total[i],cpl_in: response.data.data.cpl[i], cpa_in: response.data.data.cpa[i], wx: response.data.data.mini[i], wakeup: response.data.data.wakeup[i]}
-            //            that.tableData.push(obj); 
-            //         }
-            //         // console.log(that.tableData);
-            //         // 设置echarts
-            //         myChart.setOption({
-            //         tooltip : {
-            //             trigger: 'axis'
-            //         },
-            //         legend: {
-            //             data:['展示次数','点击次数','消耗金额']
-            //         },
-            //         // toolbox: {
-            //         //     show : true,
-            //         //     // feature : {
-            //         //     //     mark : {show: true},
-            //         //     //     dataView : {show: true, readOnly: false},
-            //         //     //     restore : {show: true},
-            //         //     //     saveAsImage : {show: true}
-            //         //     // }
-            //         // },
-            //         dataZoom: {
-            //             show: true,
-            //             start: 0,
-            //         },
-            //         grid: {
-            //             x: 50,
-            //             y: 20,
-            //             x2: 50,
-            //             y2: 90
-            //         },
-            //         xAxis : [
-            //             {
-            //                 type : 'category',
-            //                 data: that.Xdate
-            //             }
-            //         ],
-            //         yAxis : [
-            //             {
-            //                 type : 'value'
-            //             }
-            //         ],
-            //         series : [
-            //             // {
-            //             //     type: 'line',
-            //             //     itemStyle: {
-            //             //         color: '#FFB704'
-            //             //     },
-            //             //     // smooth:true,
-            //             //     // itemStyle: {normal: {areaStyle: {type: 'default'},color: '#FFB704'}},
-            //             //     data: that.val_date
-            //             // },
-            //             {
-            //                 name:'展示次数',
-            //                 type:'line',
-            //                 data: [1,1,10,1,1,,1,1]
-            //             },
-            //             {
-            //                 name:'点击次数',
-            //                 type:'line',
-            //                 data: [1,1,7,1,9,,9,1]
-            //             },
-            //             {
-            //                 name:'消耗金额',
-            //                 type:'line',
-            //                 data: [1,8,9,3,1,,1,1]
-            //             }
-            //         ]
-            //         })
-            //     });
-            //     // echarts 随着窗口大小改变而改变
-            //     // window.onresize(myChart.resize()) 
-            // }
-            // that.fn();
         },
         methods: {
             init() {
@@ -203,8 +98,59 @@ import echarts from 'echarts'
                     end: that.endDate
                 }
                 that.$http.get(that.hostname+"/api/dev/getincomelist"+this.url_token(),{params:Datas}).then(function(res){
-                    that.loading = false;
-                    console.log(res);
+                    
+                    if(res.body.code == 1) {
+                        that.loading = false;
+                        that.tableData = res.body.data;
+                        var xArr = [];
+                        var Yval = [];
+                        for(var i = 0; i < res.body.data.length; i++) {
+                            xArr.push(res.body.data[i].date);
+                            Yval.push(res.body.data[i][that.val_date]);
+                        }
+                        console.log(that.val_date);
+
+                        myChart.setOption({
+                            tooltip : {
+                                trigger: 'axis'
+                            },
+                            legend: {
+                                data:['展示次数','点击次数','消耗金额']
+                            },
+                            dataZoom: {
+                                show: true,
+                                start: 0,
+                            },
+                            grid: {
+                                x: 50,
+                                y: 20,
+                                x2: 50,
+                                y2: 90
+                            },
+                            xAxis : [
+                                {
+                                    type : 'category',
+                                    data: xArr
+                                }
+                            ],
+                            yAxis : [
+                                {
+                                    type : 'value'
+                                }
+                            ],
+                            series : [
+                                {
+                                    type: 'line',
+                                    itemStyle: {
+                                        color: '#FFB704'
+                                    },
+                                    // smooth:true,
+                                    // itemStyle: {normal: {areaStyle: {type: 'default'},color: '#FFB704'}},
+                                    data: Yval
+                                },
+                            ]
+                        })
+                    }
                 })
             },
             // tab动态显示
@@ -214,6 +160,7 @@ import echarts from 'echarts'
                 this.show_day = this.echart_btn[a].value
                 // 归零处理
                 this.tableData = []
+                this.startDate = this.endDate = 0;
                 if(this.echart_btn[a].value == 'more') {
                      // this.$router.replace('/Income')  //路由跳转（暂时不要）
                     this.$notify.success({
@@ -221,20 +168,21 @@ import echarts from 'echarts'
                       message: '暂未开放，敬请期待~',
                     });
                 }else {
-                  this.fn()  
+                  this.init();  
                 }
             },
             kindsTap(a) {
-            //    this.loading = true;
+               this.loading = true;
                this.kindsIndex = a
+               this.val_date = this.KindsBtn[a].value;
+               this.init();
             },
             SelectFn(val) {
                 this.loading = true;
                 this.startDate = val.split('至')[0];
                 this.endDate = val.split('至')[1];
                 this.tableData = [];
-                this.fn();
-                console.log(this.endDate);
+                this.init();
             }
         }
     }
