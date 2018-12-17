@@ -21,7 +21,7 @@
 				<div slot="header" class="clearfix">
 					<span>注意事项：</span>
 				</div>
-				<div v-if="ruleForm.utype == 2">
+				<div v-if="ruleForm.pay_type == 2">
 					<h4>周结</h4>
 					<h4>1.打款周期说明：</h4>
 					<span class="listNode">1.1 实行周结方式。开发者可以在本周任意时刻申请提款，幂动将于下周审核开发者本周所有的提款申请并安排付款。如遇节假日则顺延处理。</span>
@@ -36,7 +36,7 @@
 					<span class="listNode"> 4.1 发票出现错误，会通知开发者说明情况并将发票回寄，开发者需重新开票;</span>
 					<span class="listNode"> 4.2 在提现申请处理期间，幂动没收到等同金额的发票。</span>
 				</div>
-				<div v-else-if="ruleForm.utype == 1">
+				<div v-else-if="ruleForm.pay_type == 1">
 					<h4>半月结</h4>
 					<h4>1.打款周期说明：</h4>
 					<span class="listNode">1.1 实行15天结算方式。开发者可以在当月15号前任意时刻申请提款，幂动将于20号前审核开发者提交的提款申请并安排付款。如遇节假日则顺延处理。</span>
@@ -51,7 +51,7 @@
 					<span class="listNode"> 4.1 发票出现错误，会通知开发者说明情况并将发票回寄，开发者需重新开票;</span>
 					<span class="listNode"> 4.2 在提现申请处理期间，幂动没收到等同金额的发票。</span>
 				</div>
-				<div v-else-if="ruleForm.utype == 0">
+				<div v-else-if="ruleForm.pay_type == 0">
 					<h4>月结</h4>
 					<h4>1.打款周期说明：</h4>
 					<span class="listNode">1.1 统一实行月结方式。开发者可以在任意时刻申请提款，幂动将于每月10日审核开发者上月所有的提款申请并安排付款。如遇节假日则顺延处理。</span>
@@ -66,7 +66,7 @@
 					<span class="listNode"> 4.1 发票出现错误，会通知开发者说明情况并将发票回寄，开发者需重新开票;</span>
 					<span class="listNode"> 4.2 在提现申请处理期间，幂动没收到等同金额的发票。</span>
 				</div>
-				<div v-else-if="ruleForm.utype == 3">
+				<div v-else-if="ruleForm.pay_type == 3">
 					<h4>预付</h4>
 					<h4>1.申请预付说明：</h4>
 					<span class="listNode">1.1 预收账款剩余金额低于3天的消耗金额时可申请预付;</span>

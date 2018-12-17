@@ -120,7 +120,7 @@
                     
                     if(response.data.code == 1) {
                         that.ruleForm = response.data.data;
-                        if(that.ruleForm.utype == 3) {
+                        if(that.ruleForm.pay_type == 3) {
                             that.arr[0].name = "预收款剩余金额";
                             that.arr[1].name = "预收款总金额";
                             that.arr[2].name = "当月收入";
