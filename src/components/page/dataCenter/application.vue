@@ -1,8 +1,17 @@
 <template>
     <div>
-        <el-row>
-            <el-col :span="6" v-for="(item,index) in arr" :key="index"><div class="grid-content bg-purple" :class="item.class"><span>{{item.name}}</span><p>{{item.val}}</p></div></el-col>
-        </el-row>
+        <el-select class="appSelect" @change="appFn" v-model="appVal" clearable placeholder="请选择">
+            <el-option
+            v-for="item in options"
+            :key="item.id"
+            :label="item.appname"
+            :value="item.id">
+            </el-option>
+        </el-select>
+
+        <div class="kinds">
+            <div class="kindsBtns" @click="kindsTap(index)" :class="{kinds_active: kindsIndex == index }" v-for="(item,index) in KindsBtn" :key="index">{{item.name}}</div>
+        </div>
         <div v-loading="loading" element-loading-text="加载中...">
             <div class="chart_nav">
                 <span class="chart_title">{{echart_title}}</span>
@@ -49,13 +58,15 @@ import echarts from 'echarts'
     export default {
         data(){
             return {
+                appVal: '',
                 loading: true,
-                echart_title: '总收入趋势',
+                echart_title: '收入趋势图',
                 show_day: 7,
                 startDate: '',
                 endDate: '',
                 fn: "",
                 active: 0,
+                kindsIndex: 0,
                 valueDate: '',
                 echart_btn: [
                     {name: "7天内",value: 7},
@@ -63,119 +74,111 @@ import echarts from 'echarts'
                     {name: "60天内",value: 60}
                     // {name: "更多详情",value: "more"}
                 ],
-                countdata: [],
-                arr: [
-                    {name: "今天收入",val: "￥0.000",class: "count_special"},
-                    {name: "昨天收入",val: "￥0.000"},
-                    {name: "账户余额",val: "￥0.000"},
-                    {name: "总收入",val: "￥0.000"}
-               ],
+                KindsBtn: [
+                    {name: "总收入概括",value: "total"},
+                    {name: "CPA广告收入",value: "cpa"},
+                    {name: "加粉广告收入",value: "mini"},
+                    {name: "CPL广告收入",value: "cpl"}
+                ],
                table: [
-                    {name: "日期",prop: "dates",turn: true},
-                    {name: "总收入",prop: "all_in"},
-                    {name: "CPL收入",prop: "cpl_in"},
-                    {name: "CPA收入",prop: "cpa_in"},
-                    {name: "小程序收入",prop: "wx"},
-                    {name: "唤醒任务", prop: "wakeup"}
+                    {name: "日期",prop: "date",turn: true},
+                    {name: "CPA广告",prop: "cpa"},
+                    {name: "加粉广告",prop: "mini"},
+                    {name: "CPL广告",prop: "cpl"},
+                    {name: "当天收入",prop: "total"}
+                    // {name: "唤醒任务", prop: "wakeup"}
                ],
                tableData: [],
-                Xdate: null,
-                val_date: null
-                // hostname: "http://ad.api.com",
-                // hostname: "http://ad.midongtech.com"
+                val_date: "total",
+                options: '',
+                appInitVal: '',
             }
         },
         mounted() {
-            var that = this
+            this.appInit();
+        },
+        methods: {
+            appInit() {
+                var that = this;
+                 that.$http.get(that.hostname+"/api/dev/getApps"+this.url_token()).then(function(res){
+                     that.options = res.body.data;
+                     that.appVal = that.appInitVal || that.options[0].id;
+                     console.log(that.appVal);
+                     that.init();
+                 })
+            },
+            init() {
+                var that = this;
+                // 初始化echarts
+                let myChart = echarts.init(document.getElementById('mychart'));
+                var Datas = {
+                    cid: that.appVal,
+                    days: that.show_day,
+                    start: that.startDate, 
+                    end: that.endDate
+                }
+                that.$http.get(that.hostname+"/api/dev/getincomelist"+this.url_token(),{params:Datas}).then(function(res){
+                    
+                    if(res.body.code == 1) {
+                        that.loading = false;
+                        that.tableData = res.body.data;
+                        var xArr = [];
+                        var Yval = [];
+                        for(var i = 0; i < res.body.data.length; i++) {
+                            xArr.push(res.body.data[i].date);
+                            Yval.push(res.body.data[i][that.val_date]);
+                        }
+                        console.log(that.val_date);
 
-            // 初始化echarts
-            let myChart = echarts.init(document.getElementById('mychart'))
-            // 封装调用api
-            that.fn = function () {
-                // 金额总计api
-                that.$http.jsonp(that.hostname+"/api/dev/summary"+this.url_token()).then(function(response){
-                    // 防止多处登录
-                    if(response.body.code == 0) {
-                        this.$router.replace('/login');
-                        this.$notify.error({
+                        myChart.setOption({
+                            tooltip : {
+                                trigger: 'axis'
+                            },
+                            legend: {
+                                data:['展示次数','点击次数','消耗金额']
+                            },
+                            dataZoom: {
+                                show: true,
+                                start: 0,
+                            },
+                            grid: {
+                                x: 50,
+                                y: 20,
+                                x2: 50,
+                                y2: 90
+                            },
+                            xAxis : [
+                                {
+                                    type : 'category',
+                                    data: xArr
+                                }
+                            ],
+                            yAxis : [
+                                {
+                                    type : 'value'
+                                }
+                            ],
+                            series : [
+                                {
+                                    type: 'line',
+                                    itemStyle: {
+                                        color: '#FFB704'
+                                    },
+                                    // smooth:true,
+                                    // itemStyle: {normal: {areaStyle: {type: 'default'},color: '#FFB704'}},
+                                    data: Yval
+                                },
+                            ]
+                        })
+                    }else {
+                        that.$router.replace('/login');
+                        that.$notify.error({
                           title: '温馨提示',
                           message: '您的账号在别处登录，请重新登录',
                         })
                     }
-                    // 总计列表数据渲染
-                    that.countdata = [response.data.data.incometoday,response.data.data.incomeyesterday,response.data.data.balance,response.data.data.totalbalance]
-                    for(let i = 0;i < that.countdata.length; i++) {
-                        that.arr[i].val = that.countdata[i]
-                    }
-                });
-                // 日期数据api
-                that.$http.post(that.hostname+"/api/dev/incomeRange"+this.url_token(),{days: that.show_day, start: that.startDate, end: that.endDate}).then(function(response){
-                    console.log(response);
-                    // x轴数据
-                    that.loading = false;
-                    that.Xdate = response.data.data.date
-                    // 图表val
-                    that.val_date = response.data.data.total
-                    var len = response.data.data.date.length,obj;
-                    for(var i = 0; i < len; i++) {
-                       obj = {dates: response.data.data.date[i],all_in: response.data.data.total[i],cpl_in: response.data.data.cpl[i], cpa_in: response.data.data.cpa[i], wx: response.data.data.mini[i], wakeup: response.data.data.wakeup[i]}
-                       that.tableData.push(obj); 
-                    }
-                    // console.log(that.tableData);
-                    // 设置echarts
-                    myChart.setOption({
-                    tooltip : {
-                        trigger: 'axis'
-                    },
-                    // toolbox: {
-                    //     show : true,
-                    //     // feature : {
-                    //     //     mark : {show: true},
-                    //     //     dataView : {show: true, readOnly: false},
-                    //     //     restore : {show: true},
-                    //     //     saveAsImage : {show: true}
-                    //     // }
-                    // },
-                    dataZoom: {
-                        show: true,
-                        start: 0,
-                    },
-                    grid: {
-                        x: 50,
-                        y: 20,
-                        x2: 50,
-                        y2: 90
-                    },
-                    xAxis : [
-                        {
-                            type : 'category',
-                            data: that.Xdate
-                        }
-                    ],
-                    yAxis : [
-                        {
-                            type : 'value'
-                        }
-                    ],
-                    series : [
-                        {
-                            type: 'line',
-                            itemStyle: {
-                                color: '#FFB704'
-                            },
-                            // smooth:true,
-                            // itemStyle: {normal: {areaStyle: {type: 'default'},color: '#FFB704'}},
-                            data: that.val_date
-                        }
-                    ]
-                    })
-                });
-                // echarts 随着窗口大小改变而改变
-                // window.onresize(myChart.resize()) 
-            }
-            that.fn();
-        },
-        methods: {
+                })
+            },
             // tab动态显示
             tap(a) {
                 this.loading = true;
@@ -183,6 +186,7 @@ import echarts from 'echarts'
                 this.show_day = this.echart_btn[a].value
                 // 归零处理
                 this.tableData = []
+                this.startDate = this.endDate = 0;
                 if(this.echart_btn[a].value == 'more') {
                      // this.$router.replace('/Income')  //路由跳转（暂时不要）
                     this.$notify.success({
@@ -190,16 +194,26 @@ import echarts from 'echarts'
                       message: '暂未开放，敬请期待~',
                     });
                 }else {
-                  this.fn()  
+                  this.init();  
                 }
+            },
+            kindsTap(a) {
+               this.loading = true;
+               this.kindsIndex = a
+               this.val_date = this.KindsBtn[a].value;
+               this.init();
             },
             SelectFn(val) {
                 this.loading = true;
                 this.startDate = val.split('至')[0];
                 this.endDate = val.split('至')[1];
                 this.tableData = [];
-                this.fn();
-                console.log(this.endDate);
+                this.init();
+            },
+            appFn(val) {
+                this.loading = true;
+                this.appInitVal = val;
+                this.appInit();
             }
         }
     }
@@ -239,18 +253,6 @@ import echarts from 'echarts'
         margin-top: .4rem;
         color: #FFB600;
     }
-   /* .count_special {
-        font-size: 1.8rem;
-    }
-        .count_special span {
-            margin-top: 3.2rem;
-            float: left;
-            margin-left: 6rem;
-        }
-        .count_special p {
-            margin-top: 3.2rem;
-            float: left;
-        }*/
   .row-bg {
     padding: 10px 0;
     background-color: #f9fafc;
@@ -314,4 +316,31 @@ import echarts from 'echarts'
   .tablist .el-table,.tablist .el-table th>.cell {
     text-align: center;
   }
+
+  .kinds {
+      width: 100%;
+      height: 40px;
+      margin-bottom: 10px;
+      font-size: .9rem;
+  }
+    .kindsBtns {
+        float: left;
+        margin-right: 5px;
+        width: 10%;
+        height: 100%;
+        line-height: 40px;
+        text-align: center;
+        background: white;
+        border: 1px solid gray;
+        cursor: pointer;
+    }
+    .kinds_active {
+        color: #FFB600;
+        font-weight: bold;
+        border: 1px solid #FFB600;
+    }
+
+    .appSelect {
+        margin-bottom: 15px;
+    }
 </style>

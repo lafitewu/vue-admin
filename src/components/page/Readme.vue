@@ -87,13 +87,13 @@ import echarts from 'echarts'
         },
         mounted() {
             var that = this
-
             // 初始化echarts
             let myChart = echarts.init(document.getElementById('mychart'))
             // 封装调用api
             that.fn = function () {
                 // 金额总计api
                 that.$http.jsonp(that.hostname+"/api/dev/summary"+this.url_token()).then(function(response){
+                    // console.log(response);
                     // 防止多处登录
                     if(response.body.code == 0) {
                         this.$router.replace('/login');
@@ -107,10 +107,21 @@ import echarts from 'echarts'
                     for(let i = 0;i < that.countdata.length; i++) {
                         that.arr[i].val = that.countdata[i]
                     }
+                    that.$http.jsonp(that.hostname+"/api/dev/userinfo"+this.url_token()).then(function(response){
+                        if(response.data.data.pay_type == 3) {
+                            var preTotal = response.data.data.prebalance-response.data.data.totalbalance;
+                            that.arr[2].name = "预付剩余金额";
+                            if(preTotal > 0) {
+                                that.arr[2].val = preTotal
+                            }else {
+                                that.arr[2].val = 0
+                            }
+                        }
+                    });
                 });
                 // 日期数据api
                 that.$http.post(that.hostname+"/api/dev/incomeRange"+this.url_token(),{days: that.show_day, start: that.startDate, end: that.endDate}).then(function(response){
-                    console.log(response);
+                    // console.log(response);
                     // x轴数据
                     that.loading = false;
                     that.Xdate = response.data.data.date

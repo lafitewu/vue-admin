@@ -117,16 +117,25 @@
                var that = this;
                 that.$http.jsonp(that.hostname+"/api/dev/userinfo"+this.url_token()).then(function(response){
                     console.log(response.data);
-                    // for(var i = 0;i < that.$data.massage.length;i++) {
-                    // 	console.log(response.data.data.length);
-                    // }
+                    
                     if(response.data.code == 1) {
                         that.ruleForm = response.data.data;
-                        
-                        that.arr[0].val = that.ruleForm.balance;
-                        that.arr[1].val = that.ruleForm.not_arrive_amount;
-                        that.arr[2].val = that.ruleForm.withbalance;
+                        if(that.ruleForm.utype == 3) {
+                            that.arr[0].name = "预收款剩余金额";
+                            that.arr[1].name = "预收款总金额";
+                            that.arr[2].name = "当月收入";
+                            that.arr[3].name = "累计收入";
+
+                            that.arr[0].val = that.ruleForm.prebalance;
+                            that.arr[1].val = that.ruleForm.prebalance - that.ruleForm.totalbalance < 0 ? 0:(that.ruleForm.prebalance - that.ruleForm.totalbalance);
+                            that.arr[2].val = that.ruleForm.monthbalance;
+                        }else {
+                            that.arr[0].val = that.ruleForm.balance;
+                            that.arr[1].val = that.ruleForm.not_arrive_amount;
+                            that.arr[2].val = that.ruleForm.withbalance;
+                        }
                         that.arr[3].val = that.ruleForm.totalbalance;
+                        
                     }else {
                         that.$router.replace('/login');
                         that.$notify.error({
