@@ -117,7 +117,7 @@
                     if(response.data.code == 1) {
                         that.ruleForm = response.data.data;
 						
-						if(that.ruleForm.utype != 3) {
+						if(that.ruleForm.utype == 3) {
 							that.title = "申请预付";
 							that.NameInfo = "预付金额";
 							that.pass_arr[4].label = "预收款剩余金额";
