@@ -130,8 +130,8 @@
                             that.arr[2].name = "当月收入";
                             that.arr[3].name = "累计收入";
 
-                            that.arr[0].val = that.ruleForm.prebalance;
-                            that.arr[1].val = that.ruleForm.prebalance - that.ruleForm.totalbalance < 0 ? 0:(that.ruleForm.prebalance - that.ruleForm.totalbalance);
+                            that.arr[0].val = that.ruleForm.prebalance - that.ruleForm.totalbalance < 0 ? 0:(that.ruleForm.prebalance - that.ruleForm.totalbalance);
+                            that.arr[1].val = that.ruleForm.prebalance;
                             that.arr[2].val = that.ruleForm.monthbalance;
                         }else {
                             that.arr[0].val = that.ruleForm.balance;

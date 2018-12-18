@@ -39,7 +39,7 @@
                 <el-table
                 :data="tableData"
                 stripe
-                :default-sort = "{prop: 'dates',order: 'descending'}"
+                :default-sort = "{prop: 'date',order: 'descending'}"
                 style="width: 94%;margin: 0 auto;font-size: 1rem">
                 <el-table-column v-for="item in table"
                 :key="item.name"
