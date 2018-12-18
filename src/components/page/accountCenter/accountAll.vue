@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="tab_title">财务记录</div>
+        <!-- <div class="tab_title">财务记录</div> -->
         <el-row>
             <el-col :span="6" v-for="(item,index) in arr" :key="index"><div class="grid-content bg-purple" :class="item.class"><span>{{item.name}}</span><p>{{item.val}}</p></div></el-col>
         </el-row>
@@ -11,7 +11,7 @@
                     <div id="mychart"></div>
                 </el-col> 
             </el-row> -->
-            <div class="tab_title">提款记录</div>
+            <div class="tab_title">财务记录</div>
             <div class="tablist">
                 <el-table
                     :data="tableData"

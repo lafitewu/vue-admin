@@ -94,6 +94,9 @@
                 ]
             }
         },
+        mounted() {
+            this.inits();
+        },
         computed:{
             onRoutes(){
                 this.nowPath = this.$route.path.replace('/','');
@@ -102,6 +105,28 @@
                     this.nowPath = "personal";
                 }
                 return this.nowPath
+            }
+        },
+        methods: {
+            inits() {
+               var that = this;
+                that.$http.jsonp(that.hostname+"/api/dev/userinfo"+this.url_token()).then(function(response){
+                    // console.log(response.data)
+                    if(response.data.code == 1) {
+                        that.ruleForm = response.data.data;
+                        if(that.ruleForm.pay_type == 3) {
+                            that.items[4].subs[1].title = "申请预付"
+                        }else {
+                            that.items[4].subs[1].title = "申请提款"
+                        }
+                    }else {
+                        that.$router.replace('/login');
+                        that.$notify.error({
+                            title: '温馨提示',
+                            message: '您的账号在别处登录，请重新登录',
+                        })
+                    }
+                }); 
             }
         }
     }

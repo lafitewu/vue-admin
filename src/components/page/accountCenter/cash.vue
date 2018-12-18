@@ -124,12 +124,15 @@
 							that.pass_arr[7].label = "预付金额";
 							that.pass_arr[8].label = "预付金额";
 							that.pass_arr[5].shows = true;
+							that.pass_arr[4].holder = that.ruleForm.prebalance - that.ruleForm.totalbalance < 0 ? 0:(that.ruleForm.prebalance - that.ruleForm.totalbalance);
+						}else {
+							that.pass_arr[4].holder = that.ruleForm.balance;
 						}
                         that.pass_arr[0].holder = that.ruleForm.bankuser;
                         that.pass_arr[1].holder = that.ruleForm.status;
                         that.pass_arr[2].holder = that.ruleForm.bankaccount;
 						that.pass_arr[3].holder = that.ruleForm.bankname;
-						that.pass_arr[4].holder = that.ruleForm.balance;
+						
 						that.pass_arr[5].holder = that.ruleForm.withbalance;
                     }else {
                         that.$router.replace('/login');
@@ -154,14 +157,18 @@
 		   cashFn() { 
 			   let that = this;
 			   if(that.ruleForm.status == "审核中") {
-				   that.$message.error('账户审核中，不能提款！');
+				   if(that.ruleForm.pay_type == 3) {
+						that.$message.error('账户审核中，不可申请预付!');
+					}else {
+						that.$message.error('账户审核中，不能提款！');
+					}
 			   }else {
 				   if((that.pass_arr[8].holder.split('.').length == 1) && (that.pass_arr[8].holder >= 500) && (that.checked)) {
 							var datas = {
 								amount: that.pass_arr[8].holder
 							}
 							var Api;
-							if(that.ruleForm.utype == 3) {
+							if(that.ruleForm.pay_type == 3) {
 								Api = "/api/dev/applyprepay";
 							}else {
 								Api = "/api/dev/withdraw";
