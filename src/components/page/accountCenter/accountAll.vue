@@ -39,6 +39,10 @@
                                 <span>{{page_scope.row.receipt != ""? "是":"否"}}</span>
                             </template>    
                         </el-table-column>
+                         <el-table-column
+                        label="备注"
+                        prop="bz">
+                        </el-table-column>
                         <el-table-column
                         label="提款金额"
                         prop="amount">

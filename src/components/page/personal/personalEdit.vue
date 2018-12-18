@@ -287,50 +287,64 @@
 			saveFn() {
 				let that = this;
 				that.dialogVisible = false;
+				var SaveTurn;
 				if(that.ruleForm.utype == "0") {
 					// 个人
 					that.ruleForm.compayname = "";
 					that.ruleForm.open_license = "";
 					that.ruleForm.business_license = "";
+
+					if(that.ruleForm.realname == "") {
+						SaveTurn = 1;
+					}
 				}else {
 					// 公司
-					that.ruleForm.name = "";
+					that.ruleForm.realname = "";
 					that.ruleForm.cardno = "";
 					that.ruleForm.cardupimage = "";
 					that.ruleForm.carddownimage = "";
-				}
-				var Datas = {
-					email: that.ruleForm.email,
-					utype: that.ruleForm.utype,
-					name: that.ruleForm.name,
-					mobile: that.ruleForm.mobile,
-					compayname: that.ruleForm.compayname,
-					qq: that.ruleForm.qq,
-					address: that.ruleForm.address,
-					cardno: that.ruleForm.cardno,
-					bankuser: that.ruleForm.bankuser,
-					bankname: that.ruleForm.bankname,
-					bankaccount: that.ruleForm.bankaccount,
-					cardupimage: that.ruleForm.cardupimage,
-					carddownimage: that.ruleForm.carddownimage,
-					business_license: that.ruleForm.business_license,
-					open_license: that.ruleForm.open_license,
-					tax_payment: that.ruleForm.tax_payment,
-					realname: that.ruleForm.realname
-				}
-				that.$http.post(that.hostname+"/api/dev/updateuserinfo"+that.url_token(), Datas).then((response) => {
-					console.log(response);
 
-					that.$notify.success({
-						title: '成功',
-						message: '保存成功！',
+					if(that.ruleForm.compayname == "") {
+						SaveTurn = 1;
+					}
+				}
+
+				if(SaveTurn == 1) {
+					that.$message.error('公司名或个人名称有误！');
+				}else {
+					var Datas = {
+						email: that.ruleForm.email,
+						utype: that.ruleForm.utype,
+						name: that.ruleForm.name,
+						mobile: that.ruleForm.mobile,
+						compayname: that.ruleForm.compayname,
+						qq: that.ruleForm.qq,
+						address: that.ruleForm.address,
+						cardno: that.ruleForm.cardno,
+						bankuser: that.ruleForm.bankuser,
+						bankname: that.ruleForm.bankname,
+						bankaccount: that.ruleForm.bankaccount,
+						cardupimage: that.ruleForm.cardupimage,
+						carddownimage: that.ruleForm.carddownimage,
+						business_license: that.ruleForm.business_license,
+						open_license: that.ruleForm.open_license,
+						tax_payment: that.ruleForm.tax_payment,
+						realname: that.ruleForm.realname
+					}
+					that.$http.post(that.hostname+"/api/dev/updateuserinfo"+that.url_token(), Datas).then((response) => {
+						console.log(response);
+
+						that.$notify.success({
+							title: '成功',
+							message: '保存成功！',
+						});
+						that.$router.push("/personal");
+						that.Disabled = "";
+						that.btnShow = true;
+
+					}, (response) => {
 					});
-					that.$router.push("/personal");
-					that.Disabled = "";
-					that.btnShow = true;
-
-				}, (response) => {
-				});
+				}
 			},
 			cancleFn() {
 				this.dialogVisible = false;

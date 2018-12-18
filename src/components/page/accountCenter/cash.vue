@@ -153,38 +153,42 @@
 		   },
 		   cashFn() { 
 			   let that = this;
-			   if((that.pass_arr[8].holder.split('.').length == 1) && (that.pass_arr[8].holder >= 500) && (that.checked)) {
-					var datas = {
-						amount: that.pass_arr[8].holder
-					}
-					var Api;
-					if(that.ruleForm.utype == 3) {
-						Api = "/api/dev/applyprepay";
-					}else {
-						Api = "/api/dev/withdraw";
-					}
-					that.$http.post(that.hostname+Api+this.url_token(),datas).then(function(response){
-						if(response.data.code == 0) {
-							that.$notify.error({
-								title: '错误',
-								message: response.data.msg
-							});
-						}else {
-							that.$notify({
-								title: '成功',
-								message: '提交成功',
-								type: 'success'
-							});
-							that.$router.push('/account');
-						}
-					});
-					
+			   if(that.ruleForm.status == "审核中") {
+				   that.$message.error('账户审核中，不能提款！');
 			   }else {
-				   if(!that.checked) {
-					   that.checkBoxTurn = true;
-				   }else {
-					   that.$message.error('请输入正确的提现金额');
-				   }
+				   if((that.pass_arr[8].holder.split('.').length == 1) && (that.pass_arr[8].holder >= 500) && (that.checked)) {
+							var datas = {
+								amount: that.pass_arr[8].holder
+							}
+							var Api;
+							if(that.ruleForm.utype == 3) {
+								Api = "/api/dev/applyprepay";
+							}else {
+								Api = "/api/dev/withdraw";
+							}
+							that.$http.post(that.hostname+Api+this.url_token(),datas).then(function(response){
+								if(response.data.code == 0) {
+									that.$notify.error({
+										title: '错误',
+										message: response.data.msg
+									});
+								}else {
+									that.$notify({
+										title: '成功',
+										message: '提交成功',
+										type: 'success'
+									});
+									that.$router.push('/account');
+								}
+							});
+							
+					}else {
+						if(!that.checked) {
+							that.checkBoxTurn = true;
+						}else {
+							that.$message.error('请输入正确的提现金额');
+						}
+					}
 			   }
 		   },
 		   checkBoxFn() {
