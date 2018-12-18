@@ -15,6 +15,11 @@ Vue.use(VueCookies)
 Vue.use(ElementUI);
 Vue.use(VueResource);
 Vue.prototype.$axios = axios;
+
+// 兼容请求两次接口options
+Vue.http.options.emulateHTTP = true;
+Vue.http.options.emulateJSON = true;
+
 Vue.prototype.url_token = function() {
 	return "?token="+this.$cookies.get('token');
 }
