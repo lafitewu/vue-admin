@@ -17,9 +17,6 @@
                     :data="tableData"
                     style="width: 100%"
                     row-style="height: 50px">
-                    <!-- <el-table-column type="expand">
-                    
-                    </el-table-column> -->
                         <el-table-column
                         label="交易号"
                         prop="deal_id">
@@ -109,7 +106,8 @@
                     {name: "唤醒任务", prop: "wakeup"}
                ],
                tableData: [],
-               curPage: 1
+               curPage: 1,
+               allPage: ''
             }
         },
         mounted() {
@@ -120,7 +118,7 @@
            Init() {
                var that = this;
                 that.$http.jsonp(that.hostname+"/api/dev/userinfo"+this.url_token()).then(function(response){
-                    console.log(response.data);
+                    // console.log(response.data);
                     
                     if(response.data.code == 1) {
                         that.ruleForm = response.data.data;
@@ -156,7 +154,7 @@
                 limit: 10
             }
             that.$http.get(that.hostname+"/api/dev/withdrawlist"+this.url_token(),{params:datas}).then(function(res){
-                console.log(res.body);
+                // console.log(res.body);
                 that.loading = false;
                 that.tableData = res.body.data.rows;
                 that.allPage = (res.body.data.total/10)*10;

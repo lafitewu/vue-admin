@@ -113,7 +113,7 @@
 			Init() {
                var that = this;
                 that.$http.jsonp(that.hostname+"/api/dev/userinfo"+this.url_token()).then(function(response){
-                    console.log(response.data);
+                    // console.log(response.data);
                     if(response.data.code == 1) {
                         that.ruleForm = response.data.data;
 						

@@ -108,7 +108,7 @@ import echarts from 'echarts'
                             xArr.push(res.body.data[i].date);
                             Yval.push(res.body.data[i][that.val_date]);
                         }
-                        console.log(that.val_date);
+                        // console.log(that.val_date);
 
                         myChart.setOption({
                             tooltip : {

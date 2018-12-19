@@ -72,11 +72,10 @@ import echarts from 'echarts'
                ],
                table: [
                     {name: "日期",prop: "dates",turn: true},
-                    {name: "总收入",prop: "all_in"},
-                    {name: "CPL收入",prop: "cpl_in"},
                     {name: "CPA收入",prop: "cpa_in"},
-                    {name: "小程序收入",prop: "wx"},
-                    {name: "唤醒任务", prop: "wakeup"}
+                    {name: "加粉广告",prop: "wx"},
+                    {name: "CPL收入",prop: "cpl_in"},
+                    {name: "总收入",prop: "all_in"}
                ],
                tableData: [],
                 Xdate: null,

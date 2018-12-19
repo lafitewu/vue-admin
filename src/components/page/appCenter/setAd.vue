@@ -65,7 +65,7 @@
 			</div>
 		</div> -->
 		
-		<el-collapse style="margin-top: 30px" v-model="activeName" accordion>
+		<el-collapse style="margin-top: 30px" accordion>
 			<el-collapse-item :title="msg4" name="1">
 				<div class="adsTable">
 					<el-table
@@ -213,7 +213,7 @@
 					filterCpl: that.filterCpl
 				};
 				that.$http.post(that.hostname+"/api/dev/saveAppConfig"+this.url_token(),datas).then(function(res){
-					console.log(res.body);
+					// console.log(res.body);
 					if(res.body.code == 1) {
 						this.$notify.success({
 	                      title: '成功',
@@ -243,16 +243,17 @@
 		    },
 		    // 下拉菜单动态赋值
 	    	selectFn(val) {
+				var that = this;
 		      	var keys;
-		      	for(var i = 0,L = this.options.length; i < L; i++) {
-		      		if(val == this.options[i].id) {
+		      	for(var i = 0,L = that.options.length; i < L; i++) {
+		      		if(val == that.options[i].id) {
 		      			keys = i;
 		      		}
 		      	}
-		      	this.Id = this.options[keys].id;
-		      	this.value2 = this.options[keys].exdw;
-		      	this.moneyVal = this.options[keys].exchange;
-		      	this.tableData3 = this.options[keys].cpls;
+		      	that.Id = that.options[keys].id;
+		      	that.value2 = that.options[keys].exdw;
+		      	that.moneyVal = that.options[keys].exchange;
+		      	that.tableData3 = that.options[keys].cpls;
 	      }
 	    }
 	}

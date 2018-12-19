@@ -7,7 +7,7 @@
             stripe
             :default-sort = "{prop: 'dates',order: 'descending'}"
             style="width: 100%;margin: 20px auto;font-size: 1rem;text-align: center">
-            <el-table-column v-for="item in appTable" :key="index"
+            <el-table-column v-for="(item,index) in appTable" :key="index"
               :prop="item.prop"
               :label="item.name"
               :sortable="item.turn" >
@@ -35,7 +35,7 @@
 		mounted() {
 			var that = this;
 			that.$http.post(that.hostname+"/api/dev/getApps"+this.url_token()).then(function(res){
-				console.log(res.body.data);
+				// console.log(res.body.data);
 				that.loading = false;
 				that.tableData = res.body.data;
 			});

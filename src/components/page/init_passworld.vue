@@ -1,7 +1,7 @@
 <template>
 	<div class="passworld">
 		<div class="pass_title">{{title}}</div>
-		<div class="init_list" v-for="item in pass_arr" :key="item.val">
+		<div class="init_list" v-for="(item,index) in pass_arr" :key="index">
 			<font>{{item.label}}：</font><span>*</span><el-input class="init_input" v-model="item.val" :placeholder="item.holder"></el-input>
 		</div>
 		<div class="init_btn">

@@ -103,7 +103,7 @@ import echarts from 'echarts'
                  that.$http.get(that.hostname+"/api/dev/getApps"+this.url_token()).then(function(res){
                      that.options = res.body.data;
                      that.appVal = that.appInitVal || that.options[0].id;
-                     console.log(that.appVal);
+                    //  console.log(that.appVal);
                      that.init();
                  })
             },
@@ -128,7 +128,7 @@ import echarts from 'echarts'
                             xArr.push(res.body.data[i].date);
                             Yval.push(res.body.data[i][that.val_date]);
                         }
-                        console.log(that.val_date);
+                        // console.log(that.val_date);
 
                         myChart.setOption({
                             tooltip : {
