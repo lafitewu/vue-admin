@@ -258,7 +258,7 @@
 	    }
 	}
 </script>
-<style>
+<style scoped>
 	h3 {
 		width: 100%;
 		padding-bottom: 1vw; 

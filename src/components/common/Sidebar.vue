@@ -43,6 +43,10 @@
                                  index: 'setAd',
                                  title: '广告设置'
                              },
+                              {
+                                 index: 'adDetails',
+                                 title: '详细信息'
+                             }
                          ]
                      },
                      {
@@ -57,7 +61,7 @@
                              {
                                  index: 'Application',
                                  title: '应用报表'
-                             },
+                             }
                          ]
                      },
                     {

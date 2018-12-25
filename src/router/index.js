@@ -63,11 +63,15 @@ export default new Router({
                 },
                 {
                     path: '/applist',
-                    component: resolve => require(['../components/page/appCenter/appList'], resolve)
+                    component: resolve => require(['../components/page/appCenter/appList'], resolve)  //应用列表
                 },
                 {
                     path: '/setAd',
-                    component: resolve => require(['../components/page/appCenter/setAd'], resolve)
+                    component: resolve => require(['../components/page/appCenter/setAd'], resolve)  // 广告设置
+                },
+                {
+                    path: '/adDetails',
+                    component: resolve => require(['../components/page/appCenter/detailMsg'], resolve)  
                 },
                 {
                     path: '/adList',
