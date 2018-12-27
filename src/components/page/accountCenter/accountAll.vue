@@ -33,7 +33,7 @@
                         label="发票"
                         >
                             <template scope="page_scope">
-                                <span>{{page_scope.row.receipt != ""? "是":"否"}}</span>
+                                <span>{{page_scope.row.has_receipt != 0? "是":"否"}}</span>
                             </template>    
                         </el-table-column>
                          <el-table-column
