@@ -1,8 +1,8 @@
 <template>
 	<div class="setAd">
 		<h3>{{msg}}</h3>
-		<div class="selects">
-			<el-select v-model="value" placeholder="请选择应用" @change="selectFn">
+		<!-- <div class="selects"> -->
+			<el-select style="margin-top: 20px" v-model="value" placeholder="请选择应用" @change="selectFn">
 			    <el-option
 			      v-for="item in options"
 			      :key="item.id"
@@ -11,18 +11,51 @@
 			      >
 			    </el-option>
 			</el-select>
-		</div>
-		<div class="moneySet">
-			<h4>{{msg1}}</h4>
-			<div class="money1">{{msg2}}</div>
-			<el-input style="width:19%;margin-top: 0.5vw;" v-model="value2" placeholder=""></el-input>
-		</div>
+
+			<div class="moneySet">
+				<h4>{{msg1}}</h4>
+				<div class="money1">{{msg2}}</div>
+				<el-input style="width:19%;margin-top: 0.5vw;" v-model="value2" placeholder=""></el-input>
+			</div>
+			
+			<div class="money2">
+				{{msg3}}<br/>
+				<el-input style="width:15%;margin-top: 0.5vw;" v-model="moneyVal" placeholder=""></el-input>
+			</div>	
+		<!-- </div> -->
 		
-		<div class="money2">
-			{{msg3}}<br/>
-			<el-input style="width:15%;margin-top: 0.5vw;" v-model="moneyVal" placeholder=""></el-input>
+		<div class="kinds">
+			<div class="kindsBtns" @click="kindsTap(index)" :class="{kinds_active: kindsIndex == index }" v-for="(item,index) in KindsBtn" :key="index">{{item.name}}</div>
+		</div>
+		<div class="money2" v-if="userRatio1">
+			{{msg6}}<br/>
+			<el-input style="width:15%;margin-top: 0.5vw;" v-model="userVal" placeholder=""></el-input>
 		</div>
 
+		<div class="money2" v-if="userRatio2">
+			{{msg6}}<br/>
+			<el-input style="width:15%;margin-top: 0.5vw;" v-model="userVal2" placeholder=""></el-input>
+		</div>
+
+		<div class="money2" v-if="httpAdress1">
+			{{msg7}}<br/>
+			<el-input style="width:50%;margin-top: 0.5vw;" v-model="httpAdressVal" placeholder=""></el-input>
+		</div>
+
+		<div class="money2" v-if="httpAdress2">
+			{{msg7}}<br/>
+			<el-input style="width:50%;margin-top: 0.5vw;" v-model="httpAdressVal2" placeholder=""></el-input>
+		</div>
+
+		<div class="money2" v-if="httpAdress3">
+			{{msg7}}<br/>
+			<el-input style="width:50%;margin-top: 0.5vw;" v-model="httpAdressVal3" placeholder=""></el-input>
+		</div>
+
+		<!-- <div class="money2">
+			{{msg8}}<br/>
+			<span style="display:block;margin-top: 0.7vw;">{{httpKey}}</span>
+		</div> -->
 		<!-- <div class="ads">
 			<h4>{{msg4}}</h4>
 			<div class="adsTable">
@@ -65,7 +98,7 @@
 			</div>
 		</div> -->
 		
-		<el-collapse style="margin-top: 30px" accordion>
+		<el-collapse style="margin-top: 30px" v-if="dictShow" accordion>
 			<el-collapse-item :title="msg4" name="1">
 				<div class="adsTable">
 					<el-table
@@ -173,12 +206,32 @@
 				msg3: '虚拟货币汇率：',
 				msg4: 'CPL广告过滤',
 				msg5: 'CPA广告过滤',
+				msg6: '与用户分成比例：',
+				msg7: '服务器地址：',
+				msg8: '服务器秘钥：',
 				value: '',
 				value2: '金币',
 				moneyVal: '100',
 				options: [],
 		        tableData3: [],
-		        multipleSelection: []
+				multipleSelection: [],
+				KindsBtn: [
+                    {name: "CPA广告",value: "cpa"},
+                    {name: "CPL广告",value: "cpl"},
+                    {name: "加粉广告",value: "mini"}
+				],
+				kindsIndex: 0,
+				userRatio1: true,
+				userRatio2: false,
+				httpKey: '',
+				httpAdressVal: '',
+				httpAdressVal2: '',
+				httpAdressVal3: '',
+				userVal: '',
+				httpAdress1: true,
+				httpAdress2: false,
+				httpAdress3: false,
+				dictShow: false
 			}
 		},
 		mounted() {
@@ -200,6 +253,10 @@
 					that.value2 = that.options[0].exdw;
 					that.moneyVal = that.options[0].exchange;
 					that.tableData3 = that.options[0].cpls;
+
+					that.userVal = that.options[0].downratio_cpa;
+					that.httpAdressVal = that.options[0].cpa_callback_url;
+					that.httpKey = that.options[0].dkey;
 				});
 			},
 			// 保存接口
@@ -210,6 +267,11 @@
 					id: that.Id,
 					exdw: that.value2,
 					exchange: that.moneyVal,
+					cpa_callback_url: that.httpAdressVal,
+					cpl_callback_url: that.httpAdressVal2,
+					mini_callback_url: that.httpAdressVal3,
+					downratio_cpa: that.userVal,
+					downratio_mini: that.userVal2,
 					filterCpl: that.filterCpl
 				};
 				that.$http.post(that.hostname+"/api/dev/saveAppConfig"+this.url_token(),datas).then(function(res){
@@ -219,7 +281,7 @@
 	                      title: '成功',
 	                      message: '保存成功！',
 	                    });
-	                    this.Init();
+	                    // this.Init();
 					}else {
 						this.$notify.error({
 	                      title: '失败',
@@ -239,7 +301,11 @@
 		    },
 		    // cpl过滤
 		    handleSelectionChange(val) {
-		    	this.filterCpl = val;
+				if(val.length == 0) {
+					this.filterCpl = "";
+				}else {
+					this.filterCpl = val;
+				}
 		    },
 		    // 下拉菜单动态赋值
 	    	selectFn(val) {
@@ -253,8 +319,65 @@
 		      	that.Id = that.options[keys].id;
 		      	that.value2 = that.options[keys].exdw;
 		      	that.moneyVal = that.options[keys].exchange;
-		      	that.tableData3 = that.options[keys].cpls;
-	      }
+				that.tableData3 = that.options[keys].cpls;
+				  
+				that.userVal = that.options[keys].downratio_cpa;
+				that.userVal2 = that.options[keys].downratio_mini;
+				that.httpAdressVal = that.options[keys].cpa_callback_url;
+				that.httpAdressVal2 = that.options[keys].cpl_callback_url;
+				that.httpAdressVal3 = that.options[keys].mini_callback_url;
+				that.httpKey = that.options[keys].dkey;
+		  },
+		  kindsTap(a) {
+			var keys;
+			this.loading = true;
+			this.kindsIndex = a
+			this.val_date = this.KindsBtn[a].value;
+			for(var i = 0,L = this.options.length; i < L; i++) {
+				if(this.Id == this.options[i].id) {
+					keys = i;
+				}
+			}
+			console.log(keys);
+			console.log(this.Id);
+			if(a == 0) {
+				this.userRatio1 = true;
+				this.userRatio2 = false;
+
+				this.httpAdress1 = true;
+				this.httpAdress2 = false;
+				this.httpAdress3 = false;
+
+				this.dictShow = false;
+
+				this.userVal = this.options[keys].downratio_cpa;
+				this.httpAdressVal = this.options[keys].cpa_callback_url;
+			}else if(a == 1) {
+				this.userRatio1 = false;
+				this.userRatio2 = false;
+
+				this.httpAdress1 = false;
+				this.httpAdress2 = true;
+				this.httpAdress3 = false;
+
+				this.dictShow = true;
+
+				this.httpAdressVal2 = this.options[keys].cpl_callback_url;
+			}else {
+				this.userRatio1 = false;
+				this.userRatio2 = true;
+
+				this.httpAdress1 = false;
+				this.httpAdress2 = false;
+				this.httpAdress3 = true;
+
+				this.dictShow = false;
+
+				this.userVal2 = this.options[keys].downratio_mini;
+				this.httpAdressVal3 = this.options[keys].mini_callback_url;
+			}
+			// this.init();
+		  }
 	    }
 	}
 </script>
@@ -310,4 +433,28 @@
 		.adsTable {
 			margin-top: 1vw;
 		}
+
+
+		.kinds {
+			width: 100%;
+			height: 40px;
+			margin-top: 20px;
+			font-size: .9rem;
+		}
+			.kindsBtns {
+				float: left;
+				margin-right: 5px;
+				width: 15%;
+				height: 100%;
+				line-height: 40px;
+				text-align: center;
+				background: white;
+				border: 1px solid gray;
+				cursor: pointer;
+			}
+			.kinds_active {
+				color: #FFB600;
+				font-weight: bold;
+				border: 1px solid #FFB600;
+			}
 </style>

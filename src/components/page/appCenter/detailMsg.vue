@@ -1,12 +1,12 @@
 <template>
-	<div class="setAd">
+	<div class="setAd" v-loading="loading" element-loading-text="加载中...">
 		<h3>{{msg}}</h3>
 		<div class="selects">
 			<el-select v-model="value" placeholder="请选择应用" @change="selectFn">
 			    <el-option
 			      v-for="item in options"
 			      :key="item.id"
-			      :label="item.name"
+			      :label="item.appname"
 			      :value="item.id"
 			      >
 			    </el-option>
@@ -22,7 +22,7 @@
 			<span class="appStatus">运行中</span>
 		</div>
 
-		<div class="money2">
+		<!-- <div class="money2">
 			<label for="">{{msg4}}</label>
 			<el-upload
 				class="uploadFile"
@@ -34,23 +34,25 @@
 				<div class="el-upload__tip" slot="tip">请将成功嵌入有米广告的安装包进行上传，文件大小超过50M,可以发邮件到verify@youmi.net。<br/>
 上传成功后，我们将在每个工作日的16:00-18:00进行审核;审核通过即为“运行”状态，可获得正式广告</div>
 			</el-upload>
-		</div>
+		</div> -->
 
 		<div class="money2">
 			<label for="">{{msg5}}</label>
-			<el-input style="width:19%;margin-top: 0.5vw;" v-model="valueId" placeholder="" :disabled="isDisabled"></el-input>
-			<div class="appCopy">复制</div>
-			<span class="appInfo">嵌入SDK时使用，一个ID只能对应一个应用包名</span>
+			<span>{{appsId}}</span>
+			<!-- <el-input style="width:19%;margin-top: 0.5vw;" v-model="appsId" placeholder="" :disabled="isDisabled"></el-input> -->
+			<!-- <div class="appCopy">复制</div> -->
+			<!-- <span class="appInfo">嵌入SDK时使用，一个ID只能对应一个应用包名</span> -->
 		</div>
 
 		<div class="money2">
 			<label for="">{{msg6}}</label>
-			<el-input style="width:19%;margin-top: 0.5vw;" v-model="valueId" placeholder="" :disabled="isDisabled"></el-input>
-			<div class="appCopy">复制</div>
+			<span>{{keyId}}</span>
+			<!-- <el-input style="width:19%;margin-top: 0.5vw;" v-model="keyId" placeholder="" :disabled="isDisabled"></el-input> -->
+			<!-- <div class="appCopy">复制</div> -->
 			<span class="appInfo">嵌入SDK时使用，此应用的专属密钥</span>
 		</div>
 
-		<div class="money2">
+		<!-- <div class="money2">
 			<label for="">{{msg7}}</label>
 			<el-select v-model="value" placeholder="请选择应用" @change="selectFn">
 			    <el-option
@@ -61,17 +63,17 @@
 			      >
 			    </el-option>
 			</el-select>
-		</div>
+		</div> -->
 
-		<div class="money2">
+		<!-- <div class="money2">
 			<label for="">{{msg8}}</label>
 			<el-input style="width:19%;margin-top: 0.5vw;" v-model="valueId" placeholder=""></el-input>
 			<span class="appInfo">可填写多个关键字，不同关键字请用空格隔开</span>
-		</div>
+		</div> -->
 
 		<div class="money2">
 			<label for="">{{msg9}}</label>
-			<span>ios</span>
+			<span>{{phonetype}}</span>
 		</div>
 		
 		<div class="adSave" @click="saveFn">确认保存</div>
@@ -89,40 +91,40 @@
 				msg2: '应用名称：',
 				msg3: '应用状态：',
 				msg4: '更新应用：',
-				msg5: '发 布 I D：',
+				msg5: '应 用 I D：',
 				msg6: '应用秘钥：',
 				msg7: '应用类型：',
 				msg8: '关 键 字 ： ',
 				msg9: '应用平台：',
 				value: '',
-				value2: '金币',
+				value2: '',
 				moneyVal: '100',
 				options: [],
 		        tableData3: [],
 				multipleSelection: [],
 				valueId: '',
+				keyId: '',
+				phonetype: '',
 				isDisabled: true
 			}
 		},
 		mounted() {
 			this.Init();
 		},
-		// 组件更新之后执行(解决checked()中len取不到值)
-		updated() {
-			this.checked();
-		},
 		methods: {
 			// 初始化
 			Init() {
 				var that = this;
-				that.$http.post(that.hostname+"/api/dev/getAppsConfigs"+this.url_token()).then(function(res){
+				that.$http.post(that.hostname+"/api/dev/getApps"+this.url_token()).then(function(res){
 					that.loading = false;
-					that.options = res.data.data;
+					that.options = res.body.data;
+
 					that.Id = that.options[0].id;
-					that.value = that.options[0].name;
-					that.value2 = that.options[0].exdw;
-					that.moneyVal = that.options[0].exchange;
-					that.tableData3 = that.options[0].cpls;
+					that.value = that.options[0].appname;
+					that.value2 = that.options[0].appname;
+					that.appsId = that.options[0].id;
+					that.keyId = that.options[0].dkey;
+					that.phonetype = that.options[0].ostype;
 				});
 			},
 			// 保存接口
@@ -131,9 +133,7 @@
 				that.loading = true;
 				var datas = {
 					id: that.Id,
-					exdw: that.value2,
-					exchange: that.moneyVal,
-					filterCpl: that.filterCpl
+					appname: that.value2
 				};
 				that.$http.post(that.hostname+"/api/dev/saveAppConfig"+this.url_token(),datas).then(function(res){
 					// console.log(res.body);
@@ -151,19 +151,6 @@
 					}
 				});
 			},
-			checked(){
-				var len = this.tableData3.length;
-				// console.log(this.tableData3);
-				for(var i = 0; i < len; i++) {
-					if(this.tableData3[i].ignore == 1) {
-						this.$refs.multipleTable.toggleRowSelection(this.tableData3[i],true);
-					}
-				}
-		    },
-		    // cpl过滤
-		    handleSelectionChange(val) {
-		    	this.filterCpl = val;
-		    },
 		    // 下拉菜单动态赋值
 	    	selectFn(val) {
 				var that = this;
@@ -172,11 +159,14 @@
 		      		if(val == that.options[i].id) {
 		      			keys = i;
 		      		}
-		      	}
-		      	that.Id = that.options[keys].id;
-		      	that.value2 = that.options[keys].exdw;
-		      	that.moneyVal = that.options[keys].exchange;
-		      	that.tableData3 = that.options[keys].cpls;
+				  }
+
+				that.Id = that.options[keys].id;
+				that.value = that.options[keys].appname;
+				that.value2 = that.options[keys].appname;
+				that.appsId = that.options[keys].id;
+				that.keyId = that.options[keys].dkey;
+				that.phonetype = that.options[keys].ostype;
 	      }
 	    }
 	}
@@ -233,10 +223,10 @@
 		.adsTable {
 			margin-top: 1vw;
 		}
-		.appStatus {
+		/* .appStatus {
 			padding: 5px 10px;
 			background: #4D9705;
-		}
+		} */
 		.uploadFile {
 			/* display: inline; */
 			width: 70%;
