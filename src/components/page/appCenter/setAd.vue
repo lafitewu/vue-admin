@@ -30,11 +30,13 @@
 		<div class="money2" v-if="userRatio1">
 			{{msg6}}<br/>
 			<el-input style="width:15%;margin-top: 0.5vw;" v-model="userVal" placeholder=""></el-input>
+			<span style="margin-left: 20px">ps:分成比例应在0-1之间</span>
 		</div>
 
 		<div class="money2" v-if="userRatio2">
 			{{msg6}}<br/>
 			<el-input style="width:15%;margin-top: 0.5vw;" v-model="userVal2" placeholder=""></el-input>
+			<span style="margin-left: 20px">ps:分成比例应在0-1之间</span>
 		</div>
 
 		<div class="money2" v-if="httpAdress1">
@@ -269,6 +271,7 @@
 						message: "汇率输入有误",
 					});
 				}else {
+
 					that.loading = true;
 					var datas = {
 						id: that.Id,
