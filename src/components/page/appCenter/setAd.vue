@@ -20,7 +20,7 @@
 			
 			<div class="money2">
 				{{msg3}}<br/>
-				<el-input style="width:15%;margin-top: 0.5vw;" v-model="moneyVal" placeholder=""></el-input>
+				<el-input style="width:15%;margin-top: 0.5vw;" type="number" v-model="moneyVal" placeholder=""></el-input>
 			</div>	
 		<!-- </div> -->
 		
@@ -262,33 +262,43 @@
 			// 保存接口
 			saveFn() {
 				var that = this;
-				that.loading = true;
-				var datas = {
-					id: that.Id,
-					exdw: that.value2,
-					exchange: that.moneyVal,
-					cpa_callback_url: that.httpAdressVal,
-					cpl_callback_url: that.httpAdressVal2,
-					mini_callback_url: that.httpAdressVal3,
-					downratio_cpa: that.userVal,
-					downratio_mini: that.userVal2,
-					filterCpl: that.filterCpl
-				};
-				that.$http.post(that.hostname+"/api/dev/saveAppConfig"+this.url_token(),datas).then(function(res){
-					// console.log(res.body);
-					if(res.body.code == 1) {
-						this.$notify.success({
-	                      title: '成功',
-	                      message: '保存成功！',
-	                    });
-	                    // this.Init();
-					}else {
-						this.$notify.error({
-	                      title: '失败',
-	                      message: res.body.msg,
-	                    });
-					}
-				});
+				that.moneyVal = String(that.moneyVal);
+				if((that.moneyVal < 0) || (that.moneyVal.split('.').length != 1)) {
+					this.$notify.error({
+						title: '失败',
+						message: "汇率输入有误",
+					});
+				}else {
+					that.loading = true;
+					var datas = {
+						id: that.Id,
+						exdw: that.value2,
+						exchange: that.moneyVal,
+						cpa_callback_url: that.httpAdressVal,
+						cpl_callback_url: that.httpAdressVal2,
+						mini_callback_url: that.httpAdressVal3,
+						downratio_cpa: that.userVal,
+						downratio_mini: that.userVal2,
+						filterCpl: that.filterCpl
+					};
+					that.$http.post(that.hostname+"/api/dev/saveAppConfig"+this.url_token(),datas).then(function(res){
+						// console.log(res.body);
+						if(res.body.code == 1) {
+							this.$notify.success({
+							title: '成功',
+							message: '保存成功！',
+							});
+							this.Init();
+							// this.Init();
+						}else {
+							this.$notify.error({
+							title: '失败',
+							message: res.body.msg,
+							});
+						}
+					});
+				}
+				
 			},
 			checked(){
 				var len = this.tableData3.length;
@@ -330,7 +340,7 @@
 		  },
 		  kindsTap(a) {
 			var keys;
-			this.loading = true;
+			// this.loading = true;
 			this.kindsIndex = a
 			this.val_date = this.KindsBtn[a].value;
 			for(var i = 0,L = this.options.length; i < L; i++) {
@@ -376,7 +386,6 @@
 				this.userVal2 = this.options[keys].downratio_mini;
 				this.httpAdressVal3 = this.options[keys].mini_callback_url;
 			}
-			// this.init();
 		  }
 	    }
 	}
