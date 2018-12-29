@@ -1,5 +1,5 @@
 <template>
-	<div class="setAd">
+	<div class="setAd" v-loading="loading" element-loading-text="加载中...">
 		<h3>{{msg}}</h3>
 		<!-- <div class="selects"> -->
 			<el-select style="margin-top: 20px" v-model="value" placeholder="请选择应用" @change="selectFn">
@@ -257,7 +257,10 @@
 					that.tableData3 = that.options[0].cpls;
 
 					that.userVal = that.options[0].downratio_cpa;
-					that.httpAdressVal = that.options[0].cpa_callback_url;
+					that.userVal2 = that.options[0].downratio_mini;
+					that.httpAdressVal1 = that.options[0].cpa_callback_url;
+					that.httpAdressVal2 = that.options[0].cpl_callback_url;
+					that.httpAdressVal3 = that.options[0].mini_callback_url;
 					that.httpKey = that.options[0].dkey;
 				});
 			},

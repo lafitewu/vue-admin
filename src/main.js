@@ -24,7 +24,7 @@ Vue.prototype.url_token = function() {
 	return "?token="+this.$cookies.get('token');
 }
 // 定义全局hostname
-Vue.prototype.hostname = "http://ad.midongtech.com";  //http://testad.midongtech.com   http://ad.midongtech.com
+Vue.prototype.hostname = "http://testad.midongtech.com";  //http://testad.midongtech.com   http://ad.midongtech.com
 
 new Vue({
     router,
