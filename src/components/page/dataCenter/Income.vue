@@ -150,6 +150,13 @@ import echarts from 'echarts'
                                 },
                             ]
                         })
+                    }else {
+                         // 防止多处登录
+                        that.$router.replace('/login');
+                        that.$notify.error({
+                          title: '温馨提示',
+                          message: '您的账号在别处登录，请重新登录',
+                        })
                     }
                 })
             },

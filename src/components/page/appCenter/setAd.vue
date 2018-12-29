@@ -41,7 +41,7 @@
 
 		<div class="money2" v-if="httpAdress1">
 			{{msg7}}<br/>
-			<el-input style="width:50%;margin-top: 0.5vw;" v-model="httpAdressVal" placeholder=""></el-input>
+			<el-input style="width:50%;margin-top: 0.5vw;" v-model="httpAdressVal1" placeholder=""></el-input>
 		</div>
 
 		<div class="money2" v-if="httpAdress2">
@@ -226,7 +226,7 @@
 				userRatio1: true,
 				userRatio2: false,
 				httpKey: '',
-				httpAdressVal: '',
+				httpAdressVal1: '',
 				httpAdressVal2: '',
 				httpAdressVal3: '',
 				userVal: '',
@@ -248,39 +248,47 @@
 			Init() {
 				var that = this;
 				that.$http.post(that.hostname+"/api/dev/getAppsConfigs"+this.url_token()).then(function(res){
-					that.loading = false;
-					that.options = res.data.data;
-					that.Id = that.options[0].id;
-					that.value = that.options[0].name;
-					that.value2 = that.options[0].exdw;
-					that.moneyVal = that.options[0].exchange;
-					that.tableData3 = that.options[0].cpls;
+					 // 防止多处登录
+                    if(res.body.code == 0) {
+                        that.$router.replace('/login');
+                        that.$notify.error({
+                          title: '温馨提示',
+                          message: '您的账号在别处登录，请重新登录',
+                        })
+                    }else {
+						that.loading = false;
+						that.options = res.data.data;
+						that.Id = that.options[0].id;
+						that.value = that.options[0].name;
+						that.value2 = that.options[0].exdw;
+						that.moneyVal = that.options[0].exchange;
+						that.tableData3 = that.options[0].cpls;
 
-					that.userVal = that.options[0].downratio_cpa;
-					that.userVal2 = that.options[0].downratio_mini;
-					that.httpAdressVal1 = that.options[0].cpa_callback_url;
-					that.httpAdressVal2 = that.options[0].cpl_callback_url;
-					that.httpAdressVal3 = that.options[0].mini_callback_url;
-					that.httpKey = that.options[0].dkey;
+						that.userVal = that.options[0].downratio_cpa;
+						that.userVal2 = that.options[0].downratio_mini;
+						that.httpAdressVal1 = that.options[0].cpa_callback_url;
+						that.httpAdressVal2 = that.options[0].cpl_callback_url;
+						that.httpAdressVal3 = that.options[0].mini_callback_url;
+						that.httpKey = that.options[0].dkey;
+					}
 				});
 			},
 			// 保存接口
 			saveFn() {
 				var that = this;
 				that.moneyVal = String(that.moneyVal);
-				if((that.moneyVal < 0) || (that.moneyVal.split('.').length != 1)) {
+				if((that.moneyVal < 0) || (that.moneyVal.split('.').length != 1) || (that.userVal < 0) || (that.userVal > 1) || (that.userVal2 < 0) || (that.userVal2 > 1)) {
 					this.$notify.error({
 						title: '失败',
-						message: "汇率输入有误",
+						message: "输入有误,请重新输入",
 					});
 				}else {
-
 					that.loading = true;
 					var datas = {
 						id: that.Id,
 						exdw: that.value2,
 						exchange: that.moneyVal,
-						cpa_callback_url: that.httpAdressVal,
+						cpa_callback_url: that.httpAdressVal1,
 						cpl_callback_url: that.httpAdressVal2,
 						mini_callback_url: that.httpAdressVal3,
 						downratio_cpa: that.userVal,
@@ -290,14 +298,15 @@
 					that.$http.post(that.hostname+"/api/dev/saveAppConfig"+this.url_token(),datas).then(function(res){
 						// console.log(res.body);
 						if(res.body.code == 1) {
-							this.$notify.success({
+							that.$notify.success({
 							title: '成功',
 							message: '保存成功！',
 							});
-							this.Init();
+							that.Init();
 							// this.Init();
 						}else {
-							this.$notify.error({
+							that.loading = false; 
+							that.$notify.error({
 							title: '失败',
 							message: res.body.msg,
 							});
@@ -339,7 +348,7 @@
 				  
 				that.userVal = that.options[keys].downratio_cpa;
 				that.userVal2 = that.options[keys].downratio_mini;
-				that.httpAdressVal = that.options[keys].cpa_callback_url;
+				that.httpAdressVal1 = that.options[keys].cpa_callback_url;
 				that.httpAdressVal2 = that.options[keys].cpl_callback_url;
 				that.httpAdressVal3 = that.options[keys].mini_callback_url;
 				that.httpKey = that.options[keys].dkey;
@@ -367,7 +376,7 @@
 				this.dictShow = false;
 
 				this.userVal = this.options[keys].downratio_cpa;
-				this.httpAdressVal = this.options[keys].cpa_callback_url;
+				this.httpAdressVal1 = this.options[keys].cpa_callback_url;
 			}else if(a == 1) {
 				this.userRatio1 = false;
 				this.userRatio2 = false;

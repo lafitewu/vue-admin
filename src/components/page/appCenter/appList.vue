@@ -35,9 +35,17 @@
 		mounted() {
 			var that = this;
 			that.$http.post(that.hostname+"/api/dev/getApps"+this.url_token()).then(function(res){
-				// console.log(res.body.data);
-				that.loading = false;
-				that.tableData = res.body.data;
+				 // 防止多处登录
+				if(res.body.code == 0) {
+					that.$router.replace('/login');
+					that.$notify.error({
+						title: '温馨提示',
+						message: '您的账号在别处登录，请重新登录',
+					})
+				}else {
+					that.loading = false;
+					that.tableData = res.body.data;
+				}
 			});
 		}
 	}
