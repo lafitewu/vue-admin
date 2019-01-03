@@ -30,7 +30,7 @@
 					<span class="listNode">2.2 收入金额>=500元时可进行结算，不足500元时，将累计至账户余额;</span>
 					<h4>3.发票注意事项：</h4>
 					<span class="listNode"> 3.1 开发者在平台申请提款，需要依法开具抬头为“广州幂动科技有限公司”的增值税专用发票;</span>
-					<span class="listNode"> 3.2 提供的增值税专用发票发票金额必须与提款金额一致;</span>
+					<span class="listNode"> 3.2 提供的增值税专用发票发票金额必须与打款金额一致;</span>
 					<span class="listNode"> 3.3 增值税专用发票内容可为：信息服务费、技术服务费或广告费;</span>
 					<h4>4.如遇以下情况提款申请将延期处理：</h4>
 					<span class="listNode"> 4.1 发票出现错误，会通知开发者说明情况并将发票回寄，开发者需重新开票;</span>
@@ -45,7 +45,7 @@
 					<span class="listNode">2.2 收入金额>=500元时可进行结算，不足500元时，将累计至账户余额;</span>
 					<h4>3.发票注意事项：</h4>
 					<span class="listNode"> 3.1 开发者在平台申请提款，需要依法开具抬头为“广州幂动科技有限公司”的增值税专用发票;</span>
-					<span class="listNode"> 3.2 提供的增值税专用发票发票金额必须与提款金额一致;</span>
+					<span class="listNode"> 3.2 提供的增值税专用发票发票金额必须与打款金额一致;</span>
 					<span class="listNode"> 3.3 增值税专用发票内容可为：信息服务费、技术服务费或广告费;</span>
 					<h4>4.如遇以下情况提款申请将延期处理：</h4>
 					<span class="listNode"> 4.1 发票出现错误，会通知开发者说明情况并将发票回寄，开发者需重新开票;</span>
@@ -60,7 +60,7 @@
 					<span class="listNode">2.2 收入金额>=500元时可进行结算，不足500元时，将累计至账户余额;</span>
 					<h4>3.发票注意事项：</h4>
 					<span class="listNode"> 3.1 开发者在平台申请提款，需要依法开具抬头为“广州幂动科技有限公司”的增值税专用发票;</span>
-					<span class="listNode"> 3.2 提供的增值税专用发票发票金额必须与提款金额一致;</span>
+					<span class="listNode"> 3.2 提供的增值税专用发票发票金额必须与打款金额一致;</span>
 					<span class="listNode"> 3.3 增值税专用发票内容可为：信息服务费、技术服务费或广告费;</span>
 					<h4>4.如遇以下情况提款申请将延期处理：</h4>
 					<span class="listNode"> 4.1 发票出现错误，会通知开发者说明情况并将发票回寄，开发者需重新开票;</span>
@@ -72,7 +72,7 @@
 					<span class="listNode">1.1 预收账款剩余金额低于3天的消耗金额时可申请预付;</span>
 					<h4>2.发票注意事项：</h4>
 					<span class="listNode">2.1 开发者需要依法开具抬头为“广州幂动科技有限公司”的增值税专用发票并在每月25号前将发票邮寄至幂动;</span>
-					<span class="listNode">2.2 提供的增值税专用发票金额需与系统后台显示需开具金额一致;</span>
+					<span class="listNode">2.2 提供的增值税专用发票金额需与系统后台显示打款金额一致;</span>
 					<span class="listNode">2.3 增值税专用发票内容可为：信息服务费、技术服务费或广告费;</span>
 					<h4>3.如遇以下情况提款申请将延期处理：</h4>
 					<span class="listNode"> 3.1 发票出现错误，会通知开发者说明情况并将发票回寄，开发者需重新开票;</span>
@@ -116,7 +116,6 @@
                     // console.log(response.data);
                     if(response.data.code == 1) {
                         that.ruleForm = response.data.data;
-						
 						if(that.ruleForm.pay_type == 3) {
 							that.title = "申请预付";
 							that.NameInfo = "预付金额";
@@ -124,7 +123,7 @@
 							that.pass_arr[7].label = "预付金额";
 							that.pass_arr[8].label = "预付金额";
 							that.pass_arr[5].shows = true;
-							that.pass_arr[4].holder = that.ruleForm.prebalance - that.ruleForm.totalbalance < 0 ? 0:(that.ruleForm.prebalance - that.ruleForm.totalbalance);
+							that.pass_arr[4].holder = that.ruleForm.prebalance - that.ruleForm.totalbalance < 0 ? 0:(that.ruleForm.prebalance - that.ruleForm.totalbalance).toFixed(2);
 						}else {
 							that.pass_arr[4].holder = that.ruleForm.balance;
 						}
@@ -150,7 +149,11 @@
 				   this.valMoney = "";
 			   }else {
 				   this.pass_arr[7].notice = false;
-				   this.pass_arr[8].holder = this.valMoney;
+				   if(this.ruleForm.tax_payment == 1) {
+					   this.pass_arr[8].holder = (this.valMoney*0.97).toFixed(2);
+				   }else {
+					   this.pass_arr[8].holder = this.valMoney;
+				   }
 			   }
 			   
 		   },
@@ -163,7 +166,7 @@
 						that.$message.error('账户审核中，不能提款！');
 					}
 			   }else {
-				   if((that.pass_arr[8].holder.split('.').length == 1) && (that.pass_arr[8].holder >= 500) && (that.checked)) {
+				   if((that.pass_arr[7].holder.split('.').length == 1) && (that.pass_arr[8].holder >= 500) && (that.checked)) {
 							var datas = {
 								amount: that.pass_arr[8].holder
 							}
@@ -278,7 +281,7 @@
 
 
 	.box-card {
-		position: fixed;
+		position: absolute;
 		top: 10%;
 		right: 20px;
 		width: 350px;
