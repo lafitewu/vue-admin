@@ -44,10 +44,10 @@
                         label="提款金额"
                         prop="amount">
                         </el-table-column>
-                        <!-- <el-table-column
+                        <el-table-column
                         label="打款金额"
-                        prop="desc">
-                        </el-table-column> -->
+                        prop="pay_amount">
+                        </el-table-column>
                         <el-table-column
                         label="详情"
                         type="expand">
