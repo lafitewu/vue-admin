@@ -16,6 +16,7 @@
 				<h4>{{msg1}}</h4>
 				<div class="money1">{{msg2}}</div>
 				<el-input style="width:19%;margin-top: 0.5vw;" v-model="value2" placeholder=""></el-input>
+				<span style="margin-left: 2vw;">例如：汇率=1000,单位=金币 表示app内 1元=1000金币，请以app内实际单位为准。一般配置一次，请勿随意修改。</span>
 			</div>
 			
 			<div class="money2">
@@ -30,13 +31,13 @@
 		<div class="money2" v-if="userRatio1">
 			{{msg6}}<br/>
 			<el-input style="width:15%;margin-top: 0.5vw;" v-model="userVal" placeholder=""></el-input>
-			<span style="margin-left: 20px">ps:分成比例应在0-1之间</span>
+			<span style="margin-left: 20px">ps:分成比例应在0-1之间(如：设置0.4，给用户40%)</span>
 		</div>
 
 		<div class="money2" v-if="userRatio2">
 			{{msg6}}<br/>
 			<el-input style="width:15%;margin-top: 0.5vw;" v-model="userVal2" placeholder=""></el-input>
-			<span style="margin-left: 20px">ps:分成比例应在0-1之间</span>
+			<span style="margin-left: 20px">ps:分成比例应在0-1之间(如：设置0.4，给用户40%)</span>
 		</div>
 
 		<div class="money2" v-if="httpAdress1">
@@ -209,7 +210,7 @@
 				msg4: 'CPL广告过滤',
 				msg5: 'CPA广告过滤',
 				msg6: '与用户分成比例：',
-				msg7: '服务器地址：',
+				msg7: '回调地址（不同广告可单独配置）：',
 				msg8: '服务器秘钥：',
 				value: '',
 				value2: '金币',
@@ -220,7 +221,7 @@
 				KindsBtn: [
                     {name: "CPA广告",value: "cpa"},
                     {name: "CPL广告",value: "cpl"},
-                    {name: "加粉广告",value: "mini"}
+                    {name: "加粉广告(小程序+公众号)",value: "mini"}
 				],
 				kindsIndex: 0,
 				userRatio1: true,
@@ -475,10 +476,12 @@
 				background: white;
 				border: 1px solid gray;
 				cursor: pointer;
+				border-radius: 5px;
 			}
 			.kinds_active {
-				color: #FFB600;
+				color: white;
 				font-weight: bold;
-				border: 1px solid #FFB600;
+				background: #20A0FF;
+				/* border: 1px solid #FFB600; */
 			}
 </style>
