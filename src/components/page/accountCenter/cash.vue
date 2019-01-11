@@ -152,10 +152,10 @@
 				   if(this.ruleForm.tax_payment == 1) {
 					   this.pass_arr[8].holder = (this.valMoney*0.97).toFixed(2);
 				   }else {
+					   this.pass_arr[7].holder = this.valMoney;
 					   this.pass_arr[8].holder = this.valMoney;
 				   }
-			   }
-			   
+			   }  
 		   },
 		   cashFn() { 
 			   let that = this;
@@ -166,9 +166,9 @@
 						that.$message.error('账户审核中，不能提款！');
 					}
 			   }else {
-				   if((that.pass_arr[7].holder.split('.').length == 1) && (that.pass_arr[8].holder >= 500) && (that.checked)) {
+				   if((that.valMoney.split('.').length == 1) && (that.valMoney >= 500) && (that.checked)) {
 							var datas = {
-								amount: that.pass_arr[8].holder
+								amount: that.valMoney
 							}
 							var Api;
 							if(that.ruleForm.pay_type == 3) {
