@@ -108,6 +108,9 @@
                 if(this.nowPath == "personal_Edit") {
                     this.nowPath = "personal";
                 }
+                if(this.nowPath == "applicationDetails") {
+                    this.nowPath = "Application";
+                }
                 return this.nowPath
             }
         },

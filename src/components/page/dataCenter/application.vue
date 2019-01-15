@@ -47,6 +47,13 @@
                 :label="item.name"
                 :sortable="item.turn" >
                 </el-table-column>
+                <el-table-column
+			      label="详情"
+			      >
+                  	<template scope="scope">
+						<span class="table_detail2" @click="goDetails(scope.$index,scope.row)">查看详情{{scope.echart_title}}</span>
+					</template>
+			    </el-table-column>
             </el-table>
             </div>
         </div>
@@ -103,7 +110,6 @@ import echarts from 'echarts'
                  that.$http.get(that.hostname+"/api/dev/getApps"+this.url_token()).then(function(res){
                      that.options = res.body.data;
                      that.appVal = that.appInitVal || that.options[0].id;
-                    //  console.log(that.appVal);
                      that.init();
                  })
             },
@@ -122,11 +128,13 @@ import echarts from 'echarts'
                     if(res.body.code == 1) {
                         that.loading = false;
                         that.tableData = res.body.data;
+                        // console.log(that.tableData);
                         var xArr = [];
                         var Yval = [];
                         for(var i = 0; i < res.body.data.length; i++) {
                             xArr.push(res.body.data[i].date);
                             Yval.push(res.body.data[i][that.val_date]);
+                            // that.tableData[i].details = "查看详情";
                         }
                         // console.log(that.val_date);
 
@@ -214,6 +222,10 @@ import echarts from 'echarts'
                 this.loading = true;
                 this.appInitVal = val;
                 this.appInit();
+            },
+            goDetails(index,row) {
+                // console.log(row.date);
+                this.$router.push({ path: '/applicationDetails', query: { cid: this.appVal, dates: row.date}})
             }
         }
     }
@@ -342,5 +354,10 @@ import echarts from 'echarts'
 
     .appSelect {
         margin-bottom: 15px;
+    }
+
+    .table_detail2 {
+        color: #20a0ff;
+        cursor: pointer;
     }
 </style>

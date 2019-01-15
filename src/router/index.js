@@ -92,6 +92,10 @@ export default new Router({
                 {
                     path: '/Application',
                     component: resolve => require(['../components/page/dataCenter/application'], resolve)  //收入报表
+                },
+                {
+                    path: '/applicationDetails',
+                    component: resolve => require(['../components/page/dataCenter/applicationDetails'], resolve)  //收入报表详情页面
                 }
             ]
         },
