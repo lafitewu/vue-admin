@@ -35,7 +35,7 @@
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </span>
-      <span class="appInfo">图标大小应小于400KB</span>
+      <span class="appInfo">图标大小应小于10KB</span>
     </div>
 
     <div class="money2">
@@ -172,7 +172,13 @@ export default {
     uploadSuccess(res) {
       this.Icon = res;
     },
-    beforeAvatarUpload() {}
+	beforeAvatarUpload(file) {
+		const isLt2M = file.size / 1024 < 10;
+		if (!isLt2M) {
+			this.$message.error('上传头像图片大小不能超过 10K!');
+		}
+		return isLt2M;
+	}
   }
 };
 </script>

@@ -9,6 +9,7 @@
             </el-option>
         </el-select>
         <div v-loading="loading" element-loading-text="加载中...">
+            <div class="tab_title">广告效果详情记录</div>
             <div class="chart_nav">
                 <div class="all_btn">
 
