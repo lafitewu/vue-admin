@@ -18,58 +18,41 @@
 		</div>
 		
 		<div class="money2">
+			<div style="margin-bottom: 10px">{{msg11}}</div>
+			<span>
+				<el-upload
+					:action="this.hostname+'/api/dev/uploadpic'+this.url_token()"
+					class="avatar-uploader2"
+					:show-file-list="false"
+					:on-success="uploadSuccess"
+					:before-upload="beforeAvatarUpload">
+					<img v-if="Icon" :src="Icon" class="avatar">
+					<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+				</el-upload>
+			</span>
+			<span class="appInfo">图标大小应小于400KB</span>
+		</div>
+
+		<div class="money2">
+			<label for="">{{msg10}}</label>
+			<span>{{packName}}</span>
+		</div>
+
+		<div class="money2">
 			<label for="">{{msg3}}</label>
 			<span class="appStatus">运行中</span>
 		</div>
 
-		<!-- <div class="money2">
-			<label for="">{{msg4}}</label>
-			<el-upload
-				class="uploadFile"
-				drag
-				action="https://jsonplaceholder.typicode.com/posts/"
-				multiple>
-				<i class="el-icon-upload"></i>
-				<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-				<div class="el-upload__tip" slot="tip">请将成功嵌入有米广告的安装包进行上传，文件大小超过50M,可以发邮件到verify@youmi.net。<br/>
-上传成功后，我们将在每个工作日的16:00-18:00进行审核;审核通过即为“运行”状态，可获得正式广告</div>
-			</el-upload>
-		</div> -->
-
 		<div class="money2">
 			<label for="">{{msg5}}</label>
 			<span>{{appsId}}</span>
-			<!-- <el-input style="width:19%;margin-top: 0.5vw;" v-model="appsId" placeholder="" :disabled="isDisabled"></el-input> -->
-			<!-- <div class="appCopy">复制</div> -->
-			<!-- <span class="appInfo">嵌入SDK时使用，一个ID只能对应一个应用包名</span> -->
 		</div>
 
 		<div class="money2">
 			<label for="">{{msg6}}</label>
 			<span>{{keyId}}</span>
-			<!-- <el-input style="width:19%;margin-top: 0.5vw;" v-model="keyId" placeholder="" :disabled="isDisabled"></el-input> -->
-			<!-- <div class="appCopy">复制</div> -->
 			<span class="appInfo">嵌入SDK时使用，此应用的专属密钥</span>
 		</div>
-
-		<!-- <div class="money2">
-			<label for="">{{msg7}}</label>
-			<el-select v-model="value" placeholder="请选择应用" @change="selectFn">
-			    <el-option
-			      v-for="item in options"
-			      :key="item.id"
-			      :label="item.name"
-			      :value="item.id"
-			      >
-			    </el-option>
-			</el-select>
-		</div> -->
-
-		<!-- <div class="money2">
-			<label for="">{{msg8}}</label>
-			<el-input style="width:19%;margin-top: 0.5vw;" v-model="valueId" placeholder=""></el-input>
-			<span class="appInfo">可填写多个关键字，不同关键字请用空格隔开</span>
-		</div> -->
 
 		<div class="money2">
 			<label for="">{{msg9}}</label>
@@ -96,6 +79,8 @@
 				msg7: '应用类型：',
 				msg8: '关 键 字 ： ',
 				msg9: '应用平台：',
+				msg10: '应用包名：',
+				msg11: '应用图标：',
 				value: '',
 				value2: '',
 				moneyVal: '100',
@@ -105,6 +90,9 @@
 				valueId: '',
 				keyId: '',
 				phonetype: '',
+				packName: '',
+				Icon: '',
+				appsId: '',
 				isDisabled: true
 			}
 		},
@@ -125,6 +113,8 @@
 					that.appsId = that.options[0].id;
 					that.keyId = that.options[0].dkey;
 					that.phonetype = that.options[0].ostype;
+					that.packName = that.options[0].packagename;
+					that.Icon = that.options[0].icon_url;
 				});
 			},
 			// 保存接口
@@ -133,7 +123,8 @@
 				that.loading = true;
 				var datas = {
 					id: that.Id,
-					appname: that.value2
+					appname: that.value2,
+					icon_url: that.Icon
 				};
 				that.$http.post(that.hostname+"/api/dev/saveAppConfig"+this.url_token(),datas).then(function(res){
 					// console.log(res.body);
@@ -167,11 +158,20 @@
 				that.appsId = that.options[keys].id;
 				that.keyId = that.options[keys].dkey;
 				that.phonetype = that.options[keys].ostype;
-	      }
+				that.packName = that.options[keys].packagename;
+				that.Icon = that.options[keys].icon_url;
+		  },
+		  //图标上传成功
+		  uploadSuccess(res) {
+			  this.Icon = res;
+		  },
+		  beforeAvatarUpload() {
+
+		  } 
 	    }
 	}
 </script>
-<style scoped>
+<style>
 	h3 {
 		width: 100%;
 		padding-bottom: 1vw; 
@@ -249,5 +249,54 @@
 			margin-left: 30px;
 			color: gray;
 			font-size: 13px;
+		}
+
+
+		/*图片上传样式*/
+		.avatar-uploader2 {
+			display: inline-block;
+		}
+		.avatar-uploader2 .el-upload {
+		    border: 1px dashed #d9d9d9;
+		    border-radius: 6px;
+		    cursor: pointer;
+		    position: relative;
+		    overflow: hidden;
+		    width: 140px;
+		    height: 140px;
+		  }
+		  .avatar-uploader2 .el-upload:hover {
+		    border-color: #409EFF;
+		  }
+		  .avatar-uploader-icon {
+		    font-size: 28px;
+		    color: #8c939d;
+		    width: 120px;
+		    height: 120px;
+		    line-height: 120px;
+		    text-align: center;
+		  }
+		  .avatar {
+		    width: 120px;
+		    height: 120px;
+		    margin: auto;
+		    margin-top: 10px;
+		    display: block;
+		  }
+
+		  .coverDialog {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background: rgba(0,0,0,.5);
+			display: none;
+			color: white;
+		}
+		.avatar-uploader .el-upload:hover .coverDialog {
+			display: block;
+		}
+		
+		.el-dialog--small {
+			width: 20%;
 		}
 </style>
