@@ -18,6 +18,7 @@
                         @change="SelectFn"
                         v-model="valueDate"
                         type="date"
+                        :picker-options="pickerOptions"
                         placeholder="选择日期"
                     >
                     </el-date-picker>
@@ -27,7 +28,7 @@
                 <el-table
                 :data="tableData"
                 stripe
-                :default-sort = "{prop: 'date',order: 'descending'}"
+                :default-sort = "{prop: '',order: 'descending'}"
                 style="width: 94%;margin: 0 auto;font-size: 1rem">
                 <el-table-column
 			      label="广告名称"
@@ -73,6 +74,11 @@
                 val_date: "total",
                 options: '',
                 appInitVal: '',
+                pickerOptions: {
+                    disabledDate(time) {
+                        return time.getTime() > Date.now();
+                    }
+                }
             }
         },
         mounted() {
