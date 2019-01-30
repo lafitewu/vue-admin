@@ -113,7 +113,7 @@
 			Init() {
                var that = this;
                 that.$http.jsonp(that.hostname+"/api/dev/userinfo"+this.url_token()).then(function(response){
-                    // console.log(response.data);
+                    console.log(response.data);
                     if(response.data.code == 1) {
                         that.ruleForm = response.data.data;
 						if(that.ruleForm.pay_type == 3) {
@@ -149,11 +149,15 @@
 				   this.valMoney = "";
 			   }else {
 				   this.pass_arr[7].notice = false;
-				   if(this.ruleForm.tax_payment == 1) {
-					   this.pass_arr[8].holder = (this.valMoney*0.97).toFixed(2);
+				   if(this.ruleForm.utype == 0) {
+					   this.pass_arr[8].holder = (this.valMoney*0.94).toFixed(2);
 				   }else {
-					   this.pass_arr[7].holder = this.valMoney;
-					   this.pass_arr[8].holder = this.valMoney;
+					    if(this.ruleForm.tax_payment == 1) {
+							this.pass_arr[8].holder = (this.valMoney*0.97).toFixed(2);
+						}else {
+							this.pass_arr[7].holder = this.valMoney;
+							this.pass_arr[8].holder = this.valMoney;
+						}
 				   }
 			   }  
 		   },

@@ -123,20 +123,20 @@
 
 			<div class="person_title">{{title2}}</div>
 
-			<el-form-item label="纳税方式">
+			<el-form-item label="纳税方式" v-if="!nameTurn">
 				<el-radio-group @change="taxFn" v-model="ruleForm.tax_payment" :disabled="Disabled">
 					<el-radio label="0">一般纳税人</el-radio>
 					<el-radio label="1">小规模纳税人</el-radio>
 				</el-radio-group>
 			</el-form-item>
 
-			<el-form-item label="发票类型">
+			<el-form-item label="发票类型" v-if="!nameTurn">
 				<el-radio-group v-model="ruleForm.receipt_type" :disabled="Disabled">
 					<el-radio label="专用发票">专用发票</el-radio>
 				</el-radio-group>
 			</el-form-item>
 
-			<el-form-item label="发票税率">
+			<el-form-item label="发票税率" v-if="!nameTurn">
 				<span>{{receiptTax}}</span>
 			</el-form-item>
 

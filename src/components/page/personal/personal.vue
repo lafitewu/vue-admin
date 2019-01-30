@@ -118,9 +118,9 @@
 					{label: "身份证反面",holder: "",Turn: true},
 					{label: "营业执照",holder: "",Turn: true},
 					{label: "开户许可证",holder: "",Turn: true},
-					{label: "纳税方式",holder: ""},
-					{label: "发票类型",holder: ""},
-					{label: "发票税率",holder: ""},
+					{label: "纳税方式",holder: "", Turn: true},
+					{label: "发票类型",holder: "", Turn: true},
+					{label: "发票税率",holder: "", Turn: true},
 					{label: "账户名称",holder: ""},
 					{label: "开户行",holder: ""},
 					{label: "银行账号",holder: ""},
@@ -130,7 +130,7 @@
 		mounted() {
 			var that = this;
 			that.$http.jsonp(that.hostname+"/api/dev/userinfo"+this.url_token()).then(function(response){
-                // console.log(response.data);
+                console.log(response.data);
                 // for(var i = 0;i < that.$data.massage.length;i++) {
                 // 	console.log(response.data.data.length);
 				// }
@@ -147,6 +147,10 @@
 						that.pass_arr[2].Turn = false;
 						that.pass_arr[10].Turn = false;
 						that.pass_arr[11].Turn = false;
+
+						that.pass_arr[12].Turn = false;
+						that.pass_arr[13].Turn = false;
+						that.pass_arr[14].Turn = false;
 					}else {
 						that.nameTurn = false;
 						that.cardType = "个人"
