@@ -214,8 +214,10 @@
 					// 发票税率展示
 					if(that.ruleForm.tax_payment == "0") {
 						this.nameTurn = true;
+						this.receiptTax = "6%"
 					}else {
 						this.nameTurn = false;
+						this.receiptTax = "3%"
 					}
 					// console.log(that.msg);
 				}else {
