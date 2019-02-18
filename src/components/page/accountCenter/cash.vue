@@ -15,7 +15,7 @@
 		</div>
 		<div class="init_btn">
 			
-            <el-button class="init_click" type="primary" @click="cashFn">马上提款</el-button>
+            <el-button class="init_click" type="primary" @click="cashFn" :disabled="cashBtnDisable">马上提款</el-button>
 
 			<el-card class="box-card">
 				<div slot="header" class="clearfix">
@@ -103,7 +103,8 @@
 				noticeInfo: false,
 				checked: false,
 				noticeWorld: "提现金额不能超过可提现余额",
-				checkBoxTurn: false
+				checkBoxTurn: false,
+				cashBtnDisable: false
 			}
 		},
 		mounted() {
@@ -180,6 +181,7 @@
 							}else {
 								Api = "/api/dev/withdraw";
 							}
+							that.cashBtnDisable = true;
 							that.$http.post(that.hostname+Api+this.url_token(),datas).then(function(response){
 								if(response.data.code == 0) {
 									that.$notify.error({
