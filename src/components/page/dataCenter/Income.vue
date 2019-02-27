@@ -26,7 +26,7 @@
                 </el-col> 
             </el-row>
             <div class="tab_title">详细信息列表</div>
-            <div class="DownloadData" @click="this.publicFns.exportExcel">下载数据</div>
+            <div class="DownloadData" @click="downloadFn">下载数据</div>
             <div class="tablist">
                 <el-table
                 id="lafite_datas"
@@ -192,6 +192,12 @@ import echarts from 'echarts'
                 this.endDate = val.split('至')[1];
                 this.tableData = [];
                 this.init();
+            },
+            // 导入数据
+            downloadFn() {
+                let username = localStorage.getItem('ms_username'),
+                Name = username+"+收入列表.xlsx"
+                this.publicFns.exportExcel(Name);
             }
         }
     }
@@ -297,9 +303,10 @@ import echarts from 'echarts'
   }
   .tab_title {
     float: left;
-    /* padding-top: 1rem; */
-    padding: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
     text-indent: 2%;
+    width: 20%;
     font-size: 1.4rem;
     font-weight: bold;
     line-height: 2rem;

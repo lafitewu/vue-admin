@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-select class="appSelect" @change="appFn" v-model="appVal" clearable placeholder="请选择">
+        <el-select class="appSelect" ref="appName" @change="appFn" v-model="appVal" clearable placeholder="请选择">
             <el-option
             v-for="item in options"
             :key="item.id"
@@ -35,7 +35,7 @@
                 </el-col> 
             </el-row>
             <div class="tab_title">详细信息列表</div>
-            <div class="DownloadData" @click="this.publicFns.exportExcel">下载数据</div>
+            <div class="DownloadData" @click="downloadFn">下载数据</div>
             <div class="tablist">
                 <el-table
                 id="lafite_datas"
@@ -228,6 +228,13 @@ import echarts from 'echarts'
             goDetails(index,row) {
                 // console.log(row.date);
                 this.$router.push({ path: '/applicationDetails', query: { cid: this.appVal, dates: row.date}})
+            },
+            // 导入数据
+            downloadFn() {
+                var tab = this.$refs.appName.selectedLabel;
+                let username = localStorage.getItem('ms_username'),
+                Name = username+"+"+tab+".xlsx";
+                this.publicFns.exportExcel(Name);
             }
         }
     }
@@ -321,8 +328,9 @@ import echarts from 'echarts'
   }
   .tab_title {
     float: left;
-    /* padding-top: 1rem; */
-    padding: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    width: 20%;
     text-indent: 2%;
     font-size: 1.4rem;
     font-weight: bold;

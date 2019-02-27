@@ -26,7 +26,7 @@
                 </el-col> 
             </el-row>
             <div class="tab_title">详细信息列表</div>
-            <div class="DownloadData" @click="this.publicFns.exportExcel">下载数据</div>
+            <div class="DownloadData" @click="downloadFn">下载数据</div>
             <div class="tablist">
                 <el-table
                 id="lafite_datas"
@@ -213,17 +213,12 @@ import echarts from 'echarts'
                 this.fn();
                 console.log(this.endDate);
             },
-            // 导出Excel表格
-            // exportExcel () {
-            //     /* generate workbook object from table */
-            //     var wb = XLSX.utils.table_to_book(document.querySelector('#lafite_datas'))
-            //     /* get binary string as output */
-            //     var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
-            //     try {
-            //         FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'data.xlsx')
-            //     } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
-            //     return wbout
-            // }
+            // 导入数据
+            downloadFn() {
+                let username = localStorage.getItem('ms_username'),
+                Name = username+".xlsx"
+                this.publicFns.exportExcel(Name);
+            }
         }
     }
 </script>
@@ -328,9 +323,10 @@ import echarts from 'echarts'
   }
   .tab_title {
     float: left;
-    /* padding-top: 1rem; */
-    padding: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
     text-indent: 2%;
+    width: 20%;
     font-size: 1.4rem;
     font-weight: bold;
     line-height: 2rem;
