@@ -10,6 +10,7 @@ import 'element-ui/lib/theme-default/index.css';    // 默认主题
 import "babel-polyfill";
 import VueCookies from 'vue-cookies';
 import './assets/icon/index.css';
+import publicFn from './components/publicFn';
 
 Vue.use(VueCookies)
 
@@ -26,7 +27,7 @@ Vue.prototype.url_token = function() {
 }
 // 定义全局hostname
 Vue.prototype.hostname = "http://ad.midongtech.com";  //http://testad.midongtech.com   http://ad.midongtech.com
-
+Vue.prototype.publicFns = publicFn;
 new Vue({
     router,
     store,

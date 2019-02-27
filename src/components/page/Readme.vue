@@ -26,8 +26,10 @@
                 </el-col> 
             </el-row>
             <div class="tab_title">详细信息列表</div>
+            <div class="DownloadData" @click="this.publicFns.exportExcel">下载数据</div>
             <div class="tablist">
                 <el-table
+                id="lafite_datas"
                 :data="tableData"
                 stripe
                 :default-sort = "{prop: 'dates',order: 'descending'}"
@@ -210,7 +212,18 @@ import echarts from 'echarts'
                 this.tableData = [];
                 this.fn();
                 console.log(this.endDate);
-            }
+            },
+            // 导出Excel表格
+            // exportExcel () {
+            //     /* generate workbook object from table */
+            //     var wb = XLSX.utils.table_to_book(document.querySelector('#lafite_datas'))
+            //     /* get binary string as output */
+            //     var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+            //     try {
+            //         FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'data.xlsx')
+            //     } catch (e) { if (typeof console !== 'undefined') console.log(e, wbout) }
+            //     return wbout
+            // }
         }
     }
 </script>
@@ -314,12 +327,27 @@ import echarts from 'echarts'
     padding-bottom: 2rem;
   }
   .tab_title {
-    padding-top: 1rem;
+    float: left;
+    /* padding-top: 1rem; */
+    padding: 1rem;
     text-indent: 2%;
     font-size: 1.4rem;
     font-weight: bold;
     line-height: 2rem;
     background: white;
+  }
+  .DownloadData {
+      float: right;
+      width: 100px;
+      height: 2rem;
+      /* padding-top: 1rem; */
+      margin-right: 3%;
+      cursor: pointer;
+      text-align: center;
+      line-height: 2rem;
+      margin-top: 1rem;
+      font-size: .9rem;
+      border: 1px solid gray;
   }
   .tablist .el-table,.tablist .el-table th>.cell {
     text-align: center;

@@ -35,8 +35,10 @@
                 </el-col> 
             </el-row>
             <div class="tab_title">详细信息列表</div>
+            <div class="DownloadData" @click="this.publicFns.exportExcel">下载数据</div>
             <div class="tablist">
                 <el-table
+                id="lafite_datas"
                 :data="tableData"
                 stripe
                 :default-sort = "{prop: 'date',order: 'descending'}"
@@ -318,12 +320,27 @@ import echarts from 'echarts'
     padding-bottom: 2rem;
   }
   .tab_title {
-    padding-top: 1rem;
+    float: left;
+    /* padding-top: 1rem; */
+    padding: 1rem;
     text-indent: 2%;
     font-size: 1.4rem;
     font-weight: bold;
     line-height: 2rem;
     background: white;
+  }
+  .DownloadData {
+      float: right;
+      width: 100px;
+      height: 2rem;
+      /* padding-top: 1rem; */
+      margin-right: 3%;
+      cursor: pointer;
+      text-align: center;
+      line-height: 2rem;
+      margin-top: 1rem;
+      font-size: .9rem;
+      border: 1px solid gray;
   }
   .tablist .el-table,.tablist .el-table th>.cell {
     text-align: center;
